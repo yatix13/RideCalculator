@@ -9,10 +9,15 @@ import androidx.fragment.app.FragmentActivity;
 
 import android.Manifest;
 import android.content.pm.PackageManager;
+import android.location.Address;
+import android.location.Geocoder;
 import android.location.Location;
 
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.View;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -31,6 +36,9 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import java.io.IOException;
+import java.util.List;
+
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback,
         GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener,
@@ -43,6 +51,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private Location lastLocation;
     private Marker currentLocationMarker;
     private final int REQUEST_LOCATION_CODE = 99;
+    private double endLatitude, endLongitude, startLatitude, startLongitude;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,6 +67,50 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
+    }
+
+    public void onClick(View v){
+        if(v.getId() == R.id.B_search){
+            EditText tf_location = (EditText)findViewById(R.id.TF_location);
+            String location = tf_location.getText().toString();
+            List<Address> addressList=null;
+            MarkerOptions mo = new MarkerOptions();
+
+            if(!location.equals("")){
+                Geocoder geocoder = new Geocoder(this);
+                try {
+                    addressList = geocoder.getFromLocationName(location, 5);
+                }catch(IOException e){
+                    e.printStackTrace();
+                }
+                LatLng latlng;
+
+                for(int i=0; i<addressList.size(); i++)
+                {
+                    Address myAddress = addressList.get(i);
+                    latlng = new LatLng(myAddress.getLatitude(), myAddress.getLongitude());
+
+
+                    mo.position(latlng);
+                    mo.title("Your search results");
+                    //mMap.addMarker(mo);mMap.animateCamera(CameraUpdateFactory.newLatLng(latlng));
+                }
+
+                endLatitude = addressList.get(0).getLatitude();
+                endLongitude = addressList.get(0).getLongitude();
+
+                float results[] = new float[10];
+                Location.distanceBetween(startLatitude, startLongitude, endLatitude, endLongitude, results);
+
+                latlng = new LatLng(endLatitude, endLongitude);
+                mo.position(latlng);
+                mo.title("Destination");
+                mo.snippet("Distance ="+ results[0]);
+                Log.d("distance = ", results[0]+"");
+                mMap.addMarker(mo);
+                mMap.animateCamera(CameraUpdateFactory.newLatLng(latlng));
+            }
+        }
     }
 
     @Override
@@ -122,6 +175,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             currentLocationMarker.remove();
 
         }
+
+        startLatitude = location.getLatitude();
+        startLongitude = location.getLongitude();
         LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
         MarkerOptions markerOptions = new MarkerOptions();//to set properties of marker.
         markerOptions.position(latLng);
@@ -155,7 +211,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     public boolean checkLocationPermission(){
-        if(ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)== PackageManager.PERMISSION_GRANTED){
+        if(ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)!= PackageManager.PERMISSION_GRANTED){
             if(ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.ACCESS_FINE_LOCATION)){
                 ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_LOCATION_CODE);
             }
