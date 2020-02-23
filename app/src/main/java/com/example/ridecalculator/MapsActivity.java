@@ -69,7 +69,19 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     }
 
+    private String getDirectionsUrl(){
+        StringBuilder googleDirectionsUrl = new StringBuilder("https://maps.googleapis.com/maps/api/directions/json?");
+        googleDirectionsUrl.append("origin="+startLatitude+","+startLongitude);
+        googleDirectionsUrl.append("&destination="+endLatitude+","+endLongitude);
+        googleDirectionsUrl.append("&key="+"AIzaSyBRYvFByo5BOJ7PvJqdmNSI4oSj1WZ56RM");
+
+        return googleDirectionsUrl.toString();
+    }
+
     public void onClick(View v){
+        Object dataTransfer[]= new Object[2];
+        GetDirectionsData directionsData = new GetDirectionsData();
+
         if(v.getId() == R.id.B_search){
             EditText tf_location = (EditText)findViewById(R.id.TF_location);
             String location = tf_location.getText().toString();
@@ -105,10 +117,16 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 latlng = new LatLng(endLatitude, endLongitude);
                 mo.position(latlng);
                 mo.title("Destination");
-                mo.snippet("Distance ="+ results[0]);
+                mo.snippet("Distance ="+ results[0]/1000 + " km");
                 Log.d("distance = ", results[0]+"");
                 mMap.addMarker(mo);
                 mMap.animateCamera(CameraUpdateFactory.newLatLng(latlng));
+
+
+                dataTransfer[0] = mMap;
+                dataTransfer[1] = getDirectionsUrl();
+
+                directionsData.execute(dataTransfer);
             }
         }
     }
