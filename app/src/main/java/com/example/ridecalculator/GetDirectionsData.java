@@ -44,7 +44,7 @@ public class GetDirectionsData extends AsyncTask<Object, String, String> {
         String[] directionsList;
         DataParser parser = new DataParser();
 
-        //durationDistance = parser.getDuration(s);
+        durationDistance = parser.getDuration(s);
         directionsList = parser.parseDirections(s);
         Log.d("directionsList",directionsList.toString());
         displayDirections(directionsList);
