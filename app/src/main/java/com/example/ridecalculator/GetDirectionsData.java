@@ -2,6 +2,7 @@ package com.example.ridecalculator;
 
 import android.graphics.Color;
 import android.os.AsyncTask;
+import android.util.Log;
 
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.Polyline;
@@ -17,6 +18,7 @@ public class GetDirectionsData extends AsyncTask<Object, String, String> {
     GoogleMap mMap;
     String url;
     String googleDirectionsData;
+    String duration, distance;
 
     @Override
     protected String doInBackground(Object... objects) {
@@ -27,6 +29,7 @@ public class GetDirectionsData extends AsyncTask<Object, String, String> {
 
         try {
             googleDirectionsData = downloadUrl.readUrl(url);
+            Log.d("googleDirectionsData",googleDirectionsData);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -36,10 +39,14 @@ public class GetDirectionsData extends AsyncTask<Object, String, String> {
     @Override
     protected void onPostExecute(String s) {
 
+        HashMap<String , String> durationDistance;
+
         String[] directionsList;
         DataParser parser = new DataParser();
 
+        //durationDistance = parser.getDuration(s);
         directionsList = parser.parseDirections(s);
+        Log.d("directionsList",directionsList.toString());
         displayDirections(directionsList);
     }
 

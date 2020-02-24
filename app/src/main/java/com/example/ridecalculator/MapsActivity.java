@@ -73,8 +73,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         StringBuilder googleDirectionsUrl = new StringBuilder("https://maps.googleapis.com/maps/api/directions/json?");
         googleDirectionsUrl.append("origin="+startLatitude+","+startLongitude);
         googleDirectionsUrl.append("&destination="+endLatitude+","+endLongitude);
-        googleDirectionsUrl.append("&key="+"AIzaSyBRYvFByo5BOJ7PvJqdmNSI4oSj1WZ56RM");
-
+        googleDirectionsUrl.append("&key="+"AIzaSyAsZDLYx_Ywp8Dn0Y1cwQYfcU30k7keVso");
+        Log.d("directions url = ",googleDirectionsUrl.toString());
         return googleDirectionsUrl.toString();
     }
 
@@ -115,13 +115,15 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 Location.distanceBetween(startLatitude, startLongitude, endLatitude, endLongitude, results);
 
                 latlng = new LatLng(endLatitude, endLongitude);
+                /*
                 mo.position(latlng);
+
                 mo.title("Destination");
                 mo.snippet("Distance ="+ results[0]/1000 + " km");
                 Log.d("distance = ", results[0]+"");
                 mMap.addMarker(mo);
                 mMap.animateCamera(CameraUpdateFactory.newLatLng(latlng));
-
+                */
 
                 dataTransfer[0] = mMap;
                 dataTransfer[1] = getDirectionsUrl();
