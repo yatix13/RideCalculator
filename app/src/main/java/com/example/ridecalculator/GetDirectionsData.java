@@ -4,7 +4,10 @@ import android.graphics.Color;
 import android.os.AsyncTask;
 import android.util.Log;
 
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.maps.android.PolyUtil;
@@ -19,11 +22,13 @@ public class GetDirectionsData extends AsyncTask<Object, String, String> {
     String url;
     String googleDirectionsData;
     String duration, distance;
+    LatLng latLng;
 
     @Override
     protected String doInBackground(Object... objects) {
         mMap = (GoogleMap) objects[0];
         url = (String) objects[1];
+        latLng = (LatLng) objects[2];
 
         DownloadUrl downloadUrl = new DownloadUrl();
 
@@ -46,6 +51,16 @@ public class GetDirectionsData extends AsyncTask<Object, String, String> {
 
         durationDistance = parser.getDuration(s);
         directionsList = parser.parseDirections(s);
+
+        MarkerOptions mo = new MarkerOptions();
+        mo.position(latLng);
+        mo.title("Destination");
+        mo.snippet("Distance ="+ durationDistance.get("distance"));
+        mo.snippet("Duration = "+durationDistance.get("duration"));
+        mMap.addMarker(mo);
+        mMap.animateCamera(CameraUpdateFactory.newLatLng(latLng));
+
+
         Log.d("directionsList",directionsList.toString());
         displayDirections(directionsList);
     }

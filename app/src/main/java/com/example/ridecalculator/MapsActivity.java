@@ -15,12 +15,17 @@ import android.location.Location;
 
 import android.os.Build;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
+import android.widget.SearchView;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
@@ -35,8 +40,27 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.android.libraries.places.api.Places;
+import com.google.android.libraries.places.api.internal.impl.net.pablo.FindAutocompletePredictionsPabloResponse;
+import com.google.android.libraries.places.api.model.AutocompletePrediction;
+import com.google.android.libraries.places.api.model.AutocompleteSessionToken;
+import com.google.android.libraries.places.api.model.TypeFilter;
+import com.google.android.libraries.places.api.net.FetchPhotoRequest;
+import com.google.android.libraries.places.api.net.FetchPhotoResponse;
+import com.google.android.libraries.places.api.net.FetchPlaceRequest;
+import com.google.android.libraries.places.api.net.FetchPlaceResponse;
+import com.google.android.libraries.places.api.net.FindAutocompletePredictionsRequest;
+import com.google.android.libraries.places.api.net.FindAutocompletePredictionsResponse;
+import com.google.android.libraries.places.api.net.FindCurrentPlaceRequest;
+import com.google.android.libraries.places.api.net.FindCurrentPlaceResponse;
+import com.google.android.libraries.places.api.net.PlacesClient;
+import com.mancj.materialsearchbar.MaterialSearchBar;
+import com.mancj.materialsearchbar.adapter.SuggestionsAdapter;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback,
@@ -44,14 +68,20 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         GoogleApiClient.OnConnectionFailedListener,
         LocationListener {//Added above classes
 
-
+    private SearchView searchBar;
+    private MaterialSearchBar materialSearchBar;
     private GoogleMap mMap;
     private GoogleApiClient client;
     private LocationRequest locationRequest;
+    private List<AutocompletePrediction> predictionList;
     private Location lastLocation;
+    private Button searchButton;
     private Marker currentLocationMarker;
+    private FusedLocationProviderClient fusedLocationProviderClient;
+    private List<String> suggestionList;
     private final int REQUEST_LOCATION_CODE = 99;
     private double endLatitude, endLongitude, startLatitude, startLongitude;
+    private String searchResult;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,25 +96,107 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+        searchButton = findViewById(R.id.B_search);
 
+        searchBar = findViewById(R.id.search_bar);
+        materialSearchBar = findViewById(R.id.materialSearchBar);
+        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(MapsActivity.this);
+        Places.initialize(MapsActivity.this, "AIzaSyBRYvFByo5BOJ7PvJqdmNSI4oSj1WZ56RM");
+
+        final AutocompleteSessionToken token = AutocompleteSessionToken.newInstance();
+        final PlacesClient placesClient = Places.createClient(getApplicationContext());
+
+
+        materialSearchBar.addTextChangeListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                FindAutocompletePredictionsRequest request = FindAutocompletePredictionsRequest.builder()
+                        .setCountry("in")
+                        .setTypeFilter(TypeFilter.ADDRESS)
+                        .setSessionToken(token)
+                        .setQuery(s.toString())
+                        .build();
+                placesClient.findAutocompletePredictions(request).addOnCompleteListener(new OnCompleteListener<FindAutocompletePredictionsResponse>() {
+                    @Override
+                    public void onComplete(@NonNull Task<FindAutocompletePredictionsResponse> task) {
+                        if(task.isSuccessful()){
+                            FindAutocompletePredictionsResponse response = task.getResult();
+                            Log.d("suggestionResponse", response.toString());
+                            if(response != null){
+                                predictionList = response.getAutocompletePredictions();
+                                suggestionList = new ArrayList<>();
+                                for(int i=0; i<predictionList.size(); i++){
+
+                                    AutocompletePrediction prediction = predictionList.get(i);
+                                    String one = prediction.getFullText(null).toString();
+                                    suggestionList.add(one);
+                                }
+                                materialSearchBar.updateLastSuggestions(suggestionList);
+                                if(!materialSearchBar.isSuggestionsVisible())
+                                {
+                                    materialSearchBar.showSuggestionsList();
+                                }
+
+
+
+                            }
+                        }
+                        else{
+                            Log.d("error","Auto complete request fail");
+                        }
+                    }
+                });
+
+                materialSearchBar.setSuggstionsClickListener(new SuggestionsAdapter.OnItemViewClickListener() {
+                    @Override
+                    public void OnItemClickListener(int position, View v) {
+                        if(position > suggestionList.size())
+                            return;
+                        AutocompletePrediction selectedPrediction = predictionList.get(position);
+                        String suggestion = materialSearchBar.getLastSuggestions().get(position).toString();
+                        materialSearchBar.setText(suggestion);
+                        materialSearchBar.clearSuggestions();
+                        searchResult = suggestion;
+                    }
+
+                    @Override
+                    public void OnItemDeleteListener(int position, View v) {
+
+                    }
+                });
+
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
     }
 
     private String getDirectionsUrl(){
         StringBuilder googleDirectionsUrl = new StringBuilder("https://maps.googleapis.com/maps/api/directions/json?");
         googleDirectionsUrl.append("origin="+startLatitude+","+startLongitude);
         googleDirectionsUrl.append("&destination="+endLatitude+","+endLongitude);
-        googleDirectionsUrl.append("&key="+"AIzaSyAsZDLYx_Ywp8Dn0Y1cwQYfcU30k7keVso");
+        googleDirectionsUrl.append("&key="+"AIzaSyBRYvFByo5BOJ7PvJqdmNSI4oSj1WZ56RM");
         Log.d("directions url = ",googleDirectionsUrl.toString());
         return googleDirectionsUrl.toString();
     }
 
     public void onClick(View v){
-        Object dataTransfer[]= new Object[2];
+        Object dataTransfer[]= new Object[3];
         GetDirectionsData directionsData = new GetDirectionsData();
 
         if(v.getId() == R.id.B_search){
-            EditText tf_location = (EditText)findViewById(R.id.TF_location);
-            String location = tf_location.getText().toString();
+
+            String location = "";
+            location = searchResult;
             List<Address> addressList=null;
             MarkerOptions mo = new MarkerOptions();
 
@@ -115,7 +227,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 Location.distanceBetween(startLatitude, startLongitude, endLatitude, endLongitude, results);
 
                 latlng = new LatLng(endLatitude, endLongitude);
-                /*
+
                 mo.position(latlng);
 
                 mo.title("Destination");
@@ -123,14 +235,16 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 Log.d("distance = ", results[0]+"");
                 mMap.addMarker(mo);
                 mMap.animateCamera(CameraUpdateFactory.newLatLng(latlng));
-                */
+
 
                 dataTransfer[0] = mMap;
                 dataTransfer[1] = getDirectionsUrl();
+                dataTransfer[2] = latlng;
 
                 directionsData.execute(dataTransfer);
             }
         }
+
     }
 
     @Override
