@@ -55,8 +55,7 @@ public class GetDirectionsData extends AsyncTask<Object, String, String> {
         MarkerOptions mo = new MarkerOptions();
         mo.position(latLng);
         mo.title("Destination");
-        mo.snippet("Distance ="+ durationDistance.get("distance"));
-        mo.snippet("Duration = "+durationDistance.get("duration"));
+        mo.snippet("Distance = "+ durationDistance.get("distance")+" & "+"Duration = "+durationDistance.get("duration"));
         mMap.addMarker(mo);
         mMap.animateCamera(CameraUpdateFactory.newLatLng(latLng));
 

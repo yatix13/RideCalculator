@@ -25,6 +25,7 @@ import android.widget.SearchView;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
@@ -66,7 +67,7 @@ import java.util.List;
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback,
         GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener,
-        LocationListener {//Added above classes
+        LocationListener {
 
     private SearchView searchBar;
     private MaterialSearchBar materialSearchBar;
@@ -104,7 +105,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         Places.initialize(MapsActivity.this, "AIzaSyBRYvFByo5BOJ7PvJqdmNSI4oSj1WZ56RM");
 
         final AutocompleteSessionToken token = AutocompleteSessionToken.newInstance();
-        final PlacesClient placesClient = Places.createClient(getApplicationContext());
+        final PlacesClient placesClient = Places.createClient(MapsActivity.this);
 
 
         materialSearchBar.addTextChangeListener(new TextWatcher() {
@@ -116,11 +117,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 FindAutocompletePredictionsRequest request = FindAutocompletePredictionsRequest.builder()
-                        .setCountry("in")
+                        .setCountry("IN")
                         .setTypeFilter(TypeFilter.ADDRESS)
                         .setSessionToken(token)
                         .setQuery(s.toString())
                         .build();
+                Log.d("autocomplete request", request.toString());
+
                 placesClient.findAutocompletePredictions(request).addOnCompleteListener(new OnCompleteListener<FindAutocompletePredictionsResponse>() {
                     @Override
                     public void onComplete(@NonNull Task<FindAutocompletePredictionsResponse> task) {
@@ -141,8 +144,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                                 {
                                     materialSearchBar.showSuggestionsList();
                                 }
-
-
 
                             }
                         }
@@ -195,8 +196,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         if(v.getId() == R.id.B_search){
 
-            String location = "";
-            location = searchResult;
+            String location = materialSearchBar.getText();
             List<Address> addressList=null;
             MarkerOptions mo = new MarkerOptions();
 
@@ -233,8 +233,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 mo.title("Destination");
                 mo.snippet("Distance ="+ results[0]/1000 + " km");
                 Log.d("distance = ", results[0]+"");
-                mMap.addMarker(mo);
-                mMap.animateCamera(CameraUpdateFactory.newLatLng(latlng));
+                //mMap.addMarker(mo);
+                //mMap.animateCamera(CameraUpdateFactory.newLatLng(latlng));
 
 
                 dataTransfer[0] = mMap;
