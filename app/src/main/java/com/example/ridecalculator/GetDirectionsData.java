@@ -21,7 +21,7 @@ public class GetDirectionsData extends AsyncTask<Object, String, String> {
     GoogleMap mMap;
     String url;
     String googleDirectionsData;
-    String duration, distance;
+    static String duration, distance;
     LatLng latLng;
 
     @Override
@@ -51,6 +51,7 @@ public class GetDirectionsData extends AsyncTask<Object, String, String> {
 
         durationDistance = parser.getDuration(s);
         directionsList = parser.parseDirections(s);
+        distance = durationDistance.get("distance");
 
         MarkerOptions mo = new MarkerOptions();
         mo.position(latLng);

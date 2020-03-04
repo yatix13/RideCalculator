@@ -8,6 +8,7 @@ import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentActivity;
 
 import android.Manifest;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
@@ -83,6 +84,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private final int REQUEST_LOCATION_CODE = 99;
     private double endLatitude, endLongitude, startLatitude, startLongitude;
     private String searchResult;
+    private double distance;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -181,6 +183,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         });
     }
 
+
+
     private String getDirectionsUrl(){
         StringBuilder googleDirectionsUrl = new StringBuilder("https://maps.googleapis.com/maps/api/directions/json?");
         googleDirectionsUrl.append("origin="+startLatitude+","+startLongitude);
@@ -190,6 +194,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         return googleDirectionsUrl.toString();
     }
 
+    public void onOKClick(View v){
+
+        if(v.getId()==R.id.B_ok){
+            Intent intent = new Intent(MapsActivity.this, CalculateActivity.class);
+            intent.putExtra("distance", GetDirectionsData.distance);
+            startActivity(intent);
+        }
+    }
     public void onClick(View v){
         Object dataTransfer[]= new Object[3];
         GetDirectionsData directionsData = new GetDirectionsData();
