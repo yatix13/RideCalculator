@@ -23,6 +23,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.SearchView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -254,6 +255,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 dataTransfer[2] = latlng;
 
                 directionsData.execute(dataTransfer);
+
+                TextView tv = findViewById(R.id.TV_distance);
+                tv.setText(GetDirectionsData.distance);
             }
         }
 

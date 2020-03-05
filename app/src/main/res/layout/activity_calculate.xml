@@ -12,14 +12,20 @@
 
         <TextView
             android:id="@+id/TV_distance"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:textSize="18sp"
+            android:gravity="center"
             />
 
         <TextView
             android:id="@+id/TV_petrol_price"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:textSize="18sp"
+            android:gravity="center"
             />
 
     </LinearLayout>
@@ -39,6 +45,7 @@
         android:layout_marginTop="100dp"
         android:layout_gravity="center"
         android:id = "@+id/B_calculate"
+        android:onClick="onClick"
         android:text="Calculate"
         />
 
@@ -48,6 +55,6 @@
         android:layout_gravity="center"
         android:layout_marginTop="100dp"
         android:id="@+id/TV_result"
-        android:textSize="30sp"
+        android:textSize="24sp"
         />
 </LinearLayout>
