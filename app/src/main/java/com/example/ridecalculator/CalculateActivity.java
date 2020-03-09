@@ -27,6 +27,8 @@ public class CalculateActivity extends AppCompatActivity {
     private EditText tf_average;
     private double distance, avg, petrolPrice;
     private ProgressBar progressBar;
+    private String cityName;
+    private TextView tv_cityname;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,9 +40,20 @@ public class CalculateActivity extends AppCompatActivity {
         tf_average = findViewById(R.id.TF_average);
         tv_result = findViewById(R.id.TV_result);
         progressBar = findViewById(R.id.progressBar);
+        tv_cityname = findViewById(R.id.TV_cityName);
+
+        /*
+        1. average fuel consumption
+        2. Distance -> getting from server
+        3. Number of people
+        4. City name ->
+        5. Petrol Price ->
+         */
 
         String d = getIntent().getStringExtra("distance");
         distance = Double.parseDouble(d.substring(0, d.length()-3));
+        cityName = getIntent().getStringExtra("cityName");
+        tv_cityname.setText(cityName);
         tv_distance.setText(d);
         getJSON("https://polyphyodont-bets.000webhostapp.com/fetch_petrol_price.php");
         Log.d("petrolprice",petrolPrice+"");

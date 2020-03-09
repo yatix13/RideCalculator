@@ -10,7 +10,7 @@ import java.util.HashMap;
 
 public class DataParser {
 
-    public void getCityName(String jsonData)
+    public String getCityName(String jsonData)
     {
         String cityName = "";
         try {
@@ -18,13 +18,21 @@ public class DataParser {
             JSONArray jsonArray = jsonObject.getJSONArray("results").getJSONObject(0).getJSONArray("address_components");
             for(int i = 0;i<jsonArray.length();i++)
             {
+
                 JSONObject object = jsonArray.getJSONObject(i);
                 Log.d("types",object.getString("types"));
+                if(object.getString("types").indexOf("\"locality\"") != -1)
+                {
+                    cityName = object.getString("short_name");
+                    break;
+                }
             }
+            Log.d("short_name",cityName);
 
         } catch (JSONException e) {
             e.printStackTrace();
         }
+        return cityName;
     }
 
 

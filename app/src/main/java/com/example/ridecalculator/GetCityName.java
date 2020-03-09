@@ -19,8 +19,7 @@ public class GetCityName extends AsyncTask<Object, String, String> {
 
     GoogleMap mMap;
     String url;
-    String cityName;
-    static String duration, distance;
+    static String cityName;
     LatLng latLng;
 
     @Override
@@ -43,11 +42,10 @@ public class GetCityName extends AsyncTask<Object, String, String> {
     @Override
     protected void onPostExecute(String s) {
 
-        String cityName;
 
         DataParser parser = new DataParser();
 
-        parser.getCityName(s);
+        cityName = parser.getCityName(s);
 
 
     }

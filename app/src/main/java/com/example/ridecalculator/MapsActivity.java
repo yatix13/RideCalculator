@@ -88,6 +88,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private double endLatitude, endLongitude, startLatitude, startLongitude;
     private String searchResult;
     private double distance;
+    private String cityName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -145,7 +146,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                                     suggestionList.add(one);
                                 }
                                 materialSearchBar.updateLastSuggestions(suggestionList);
-                                Log.d("suggestions =", suggestionList.get(0));
                                 if(!materialSearchBar.isSuggestionsVisible())
                                 {
                                     materialSearchBar.showSuggestionsList();
@@ -211,6 +211,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         if(v.getId()==R.id.B_ok){
             Intent intent = new Intent(MapsActivity.this, CalculateActivity.class);
             intent.putExtra("distance", GetDirectionsData.distance);
+            intent.putExtra("cityName", GetCityName.cityName);
             startActivity(intent);
         }
     }
@@ -267,15 +268,17 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
                 directionsData.execute(dataTransfer);
 
-
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
                 TextView tv = findViewById(R.id.TV_distance);
                 tv.setVisibility(View.VISIBLE);
-                tv.setText(GetDirectionsData.distance);
+                tv.setText("Distance : "+GetDirectionsData.distance);
 
                 Button B_OK = findViewById(R.id.B_ok);
                 B_OK.setVisibility(View.VISIBLE);
-
-
             }
         }
 
@@ -388,6 +391,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         dataTransfer[2] = latlng;
 
         getCityName.execute(dataTransfer);
+
 
     }
 

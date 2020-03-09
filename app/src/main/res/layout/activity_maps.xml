@@ -17,14 +17,16 @@
             app:mt_speechMode="false"
             app:mt_hint="Search"
             app:mt_maxSuggestionsCount="10"
-            android:layout_width="320dp"
+            android:layout_width="match_parent"
+            android:layout_weight="1"
             android:layout_height="wrap_content"
             android:id="@+id/materialSearchBar" />
 
         <Button
             android:id="@+id/B_search"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_weight="4"
             android:onClick="onClick"
             android:text="Search" />
 
@@ -50,6 +52,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:layout_gravity="center"
             android:id="@+id/TV_distance"
             />
         <Button
