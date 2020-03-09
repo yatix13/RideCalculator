@@ -1,5 +1,7 @@
 package com.example.ridecalculator;
 
+import android.util.Log;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -7,6 +9,24 @@ import org.json.JSONObject;
 import java.util.HashMap;
 
 public class DataParser {
+
+    public void getCityName(String jsonData)
+    {
+        String cityName = "";
+        try {
+            JSONObject jsonObject = new JSONObject(jsonData);
+            JSONArray jsonArray = jsonObject.getJSONArray("results").getJSONObject(0).getJSONArray("address_components");
+            for(int i = 0;i<jsonArray.length();i++)
+            {
+                JSONObject object = jsonArray.getJSONObject(i);
+                Log.d("types",object.getString("types"));
+            }
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
 
     public HashMap<String, String> getDuration(String jsonData)
     {

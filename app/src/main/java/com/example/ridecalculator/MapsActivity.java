@@ -145,6 +145,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                                     suggestionList.add(one);
                                 }
                                 materialSearchBar.updateLastSuggestions(suggestionList);
+                                Log.d("suggestions =", suggestionList.get(0));
                                 if(!materialSearchBar.isSuggestionsVisible())
                                 {
                                     materialSearchBar.showSuggestionsList();
@@ -266,8 +267,15 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
                 directionsData.execute(dataTransfer);
 
+
                 TextView tv = findViewById(R.id.TV_distance);
+                tv.setVisibility(View.VISIBLE);
                 tv.setText(GetDirectionsData.distance);
+
+                Button B_OK = findViewById(R.id.B_ok);
+                B_OK.setVisibility(View.VISIBLE);
+
+
             }
         }
 
@@ -338,8 +346,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         startLatitude = location.getLatitude();
         startLongitude = location.getLongitude();
+
         LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
-        
+
+        //fetching city name
+        fetchCityNameFromLatLng(latLng);
 
 
 
@@ -357,6 +368,26 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             LocationServices.FusedLocationApi.removeLocationUpdates(client, this);
         }
 
+
+    }
+
+    private String getCityNameUrl(){
+        StringBuilder googleCityNameUrl = new StringBuilder("https://maps.googleapis.com/maps/api/geocode/json?");
+        googleCityNameUrl.append("latlng="+startLatitude+","+startLongitude);
+        googleCityNameUrl.append("&key="+"AIzaSyBRYvFByo5BOJ7PvJqdmNSI4oSj1WZ56RM");
+        Log.d("city name url = ",googleCityNameUrl.toString());
+        return googleCityNameUrl.toString();
+    }
+
+    public void fetchCityNameFromLatLng(LatLng latlng)
+    {
+        GetCityName getCityName = new GetCityName();
+        Object dataTransfer[] = new Object[3];
+        dataTransfer[0] = mMap;
+        dataTransfer[1] = getCityNameUrl();
+        dataTransfer[2] = latlng;
+
+        getCityName.execute(dataTransfer);
 
     }
 
