@@ -8,6 +8,7 @@ import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentActivity;
 
 import android.Manifest;
+import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Address;
@@ -20,6 +21,7 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.SearchView;
@@ -166,6 +168,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         materialSearchBar.setText(suggestion);
                         materialSearchBar.clearSuggestions();
                         searchResult = suggestion;
+
+                        hideKeyboard(MapsActivity.this, v);
                     }
 
                     @Override
@@ -182,6 +186,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
             }
         });
+    }
+
+    public void hideKeyboard(Activity activity, View view)
+    {
+        InputMethodManager imm = (InputMethodManager)getSystemService(Activity.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
     }
 
 
@@ -329,6 +339,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         startLatitude = location.getLatitude();
         startLongitude = location.getLongitude();
         LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
+        
+
+
+
         MarkerOptions markerOptions = new MarkerOptions();//to set properties of marker.
         markerOptions.position(latLng);
         markerOptions.title("Current Location");

@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -25,6 +26,7 @@ public class CalculateActivity extends AppCompatActivity {
     private TextView tv_distance, tv_petrolprice, tv_result;
     private EditText tf_average;
     private double distance, avg, petrolPrice;
+    private ProgressBar progressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,14 +37,14 @@ public class CalculateActivity extends AppCompatActivity {
         tv_petrolprice = findViewById(R.id.TV_petrol_price);
         tf_average = findViewById(R.id.TF_average);
         tv_result = findViewById(R.id.TV_result);
+        progressBar = findViewById(R.id.progressBar);
 
         String d = getIntent().getStringExtra("distance");
         distance = Double.parseDouble(d.substring(0, d.length()-3));
-        petrolPrice = 80.53;
         tv_distance.setText(d);
         getJSON("https://polyphyodont-bets.000webhostapp.com/fetch_petrol_price.php");
         Log.d("petrolprice",petrolPrice+"");
-        tv_petrolprice.setText(petrolPrice+"");
+
 
     }
 
@@ -98,6 +100,9 @@ public class CalculateActivity extends AppCompatActivity {
                         if(city.equalsIgnoreCase("Mumbai")){
 
                             petrolPrice = object.getDouble("price");
+                            progressBar.setVisibility(View.GONE);
+                            tv_petrolprice.setText(petrolPrice+"");
+
                             break;
                         }
                     }
