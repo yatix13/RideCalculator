@@ -24,6 +24,7 @@ import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -74,7 +75,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         LocationListener {
 
     private SearchView searchBar;
-    private MaterialSearchBar materialSearchBar;
+    private MaterialSearchBar materialSearchBar , fromSearchBar;
     private GoogleMap mMap;
     private GoogleApiClient client;
     private LocationRequest locationRequest;
@@ -106,7 +107,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         searchButton = findViewById(R.id.B_search);
 
         searchBar = findViewById(R.id.search_bar);
-        materialSearchBar = findViewById(R.id.materialSearchBar);
+        materialSearchBar = findViewById(R.id.toSearchBar);
+        fromSearchBar = findViewById(R.id.fromSearchBar);
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(MapsActivity.this);
         Places.initialize(MapsActivity.this, "AIzaSyBRYvFByo5BOJ7PvJqdmNSI4oSj1WZ56RM");
 
@@ -159,6 +161,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     }
                 });
 
+
+
                 materialSearchBar.setSuggstionsClickListener(new SuggestionsAdapter.OnItemViewClickListener() {
                     @Override
                     public void OnItemClickListener(int position, View v) {
@@ -179,6 +183,81 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     }
                 });
 
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+
+        fromSearchBar.addTextChangeListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                FindAutocompletePredictionsRequest request = FindAutocompletePredictionsRequest.builder()
+                        .setCountry("IN")
+                        .setTypeFilter(TypeFilter.ADDRESS)
+                        .setSessionToken(token)
+                        .setQuery(s.toString())
+                        .build();
+                Log.d("autocomplete request", request.toString());
+
+                placesClient.findAutocompletePredictions(request).addOnCompleteListener(new OnCompleteListener<FindAutocompletePredictionsResponse>() {
+                    @Override
+                    public void onComplete(@NonNull Task<FindAutocompletePredictionsResponse> task) {
+                        if(task.isSuccessful()){
+                            FindAutocompletePredictionsResponse response = task.getResult();
+                            Log.d("suggestionResponse", response.toString());
+                            if(response != null){
+                                predictionList = response.getAutocompletePredictions();
+                                suggestionList = new ArrayList<>();
+                                for(int i=0; i<predictionList.size(); i++){
+
+                                    AutocompletePrediction prediction = predictionList.get(i);
+                                    String one = prediction.getFullText(null).toString();
+                                    suggestionList.add(one);
+                                }
+                                fromSearchBar.updateLastSuggestions(suggestionList);
+                                if(!fromSearchBar.isSuggestionsVisible())
+                                {
+                                    fromSearchBar.showSuggestionsList();
+                                }
+
+                            }
+                        }
+                        else{
+                            Log.d("error","Auto complete request fail");
+                        }
+                    }
+                });
+
+
+
+                fromSearchBar.setSuggstionsClickListener(new SuggestionsAdapter.OnItemViewClickListener() {
+                    @Override
+                    public void OnItemClickListener(int position, View v) {
+                        if(position > suggestionList.size())
+                            return;
+                        AutocompletePrediction selectedPrediction = predictionList.get(position);
+                        String suggestion = fromSearchBar.getLastSuggestions().get(position).toString();
+                        fromSearchBar.setText(suggestion);
+                        fromSearchBar.clearSuggestions();
+                        searchResult = suggestion;
+
+                        hideKeyboard(MapsActivity.this, v);
+                    }
+
+                    @Override
+                    public void OnItemDeleteListener(int position, View v) {
+
+                    }
+                });
 
             }
 
@@ -221,18 +300,21 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         if(v.getId() == R.id.B_search){
 
-            String location = materialSearchBar.getText();
+            String toLocation = materialSearchBar.getText();
+            String fromLocation = fromSearchBar.getText();
             List<Address> addressList=null;
+            List<Address> fromAddressList = null;
             MarkerOptions mo = new MarkerOptions();
+            LatLng latlng;
 
-            if(!location.equals("")){
+            if(!toLocation.equals("")){
                 Geocoder geocoder = new Geocoder(this);
                 try {
-                    addressList = geocoder.getFromLocationName(location, 5);
+                    addressList = geocoder.getFromLocationName(toLocation, 5);
                 }catch(IOException e){
                     e.printStackTrace();
                 }
-                LatLng latlng;
+
 
                 for(int i=0; i<addressList.size(); i++)
                 {
@@ -247,6 +329,31 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
                 endLatitude = addressList.get(0).getLatitude();
                 endLongitude = addressList.get(0).getLongitude();
+
+                LatLng fromlatlng;
+                if(!fromLocation.equals(""))
+                {
+                    try {
+                        fromAddressList = geocoder.getFromLocationName(fromLocation, 5);
+                    }catch(IOException e){
+                        e.printStackTrace();
+                    }
+
+
+                    for(int i=0; i<fromAddressList.size(); i++)
+                    {
+                        Address myAddress = fromAddressList.get(i);
+                        fromlatlng = new LatLng(myAddress.getLatitude(), myAddress.getLongitude());
+
+
+                        mo.position(fromlatlng);
+                        mo.title("Your search results");
+                        //mMap.addMarker(mo);mMap.animateCamera(CameraUpdateFactory.newLatLng(latlng));
+                    }
+
+                    startLatitude = fromAddressList.get(0).getLatitude();
+                    startLongitude = fromAddressList.get(0).getLongitude();
+                }
 
                 float results[] = new float[10];
                 Location.distanceBetween(startLatitude, startLongitude, endLatitude, endLongitude, results);
@@ -273,6 +380,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
+                LinearLayout bottomLayout = findViewById(R.id.bottom_layout);
+                bottomLayout.setVisibility(View.VISIBLE);
                 TextView tv = findViewById(R.id.TV_distance);
                 tv.setVisibility(View.VISIBLE);
                 tv.setText("Distance : "+GetDirectionsData.distance);
@@ -351,6 +460,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         startLongitude = location.getLongitude();
 
         LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
+        String startLocation = startLatitude+","+startLongitude;
+        fromSearchBar.setText(startLocation);
 
         //fetching city name
         fetchCityNameFromLatLng(latLng);
