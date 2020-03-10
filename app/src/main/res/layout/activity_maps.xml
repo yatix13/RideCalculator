@@ -16,6 +16,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:paddingRight="10dp"
         android:orientation="vertical"
         >
 
@@ -65,9 +66,11 @@
 
             <Button
                 android:id="@+id/B_search"
+                android:background="@drawable/rectangle_small_blue"
                 android:layout_width="match_parent"
+                android:textColor="@color/white"
                 android:layout_height="50dp"
-                android:layout_gravity="center_vertical"
+                android:layout_marginTop="55dp"
                 android:layout_weight="4"
                 android:onClick="onClick"
                 android:text="Search" />
