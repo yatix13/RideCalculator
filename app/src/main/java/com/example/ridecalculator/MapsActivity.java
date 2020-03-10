@@ -172,6 +172,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         String suggestion = materialSearchBar.getLastSuggestions().get(position).toString();
                         materialSearchBar.setText(suggestion);
                         materialSearchBar.clearSuggestions();
+                        materialSearchBar.hideSuggestionsList();
                         searchResult = suggestion;
 
                         hideKeyboard(MapsActivity.this, v);
@@ -244,6 +245,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     public void OnItemClickListener(int position, View v) {
                         if(position > suggestionList.size())
                             return;
+                        fromSearchBar.hideSuggestionsList();
+
                         AutocompletePrediction selectedPrediction = predictionList.get(position);
                         String suggestion = fromSearchBar.getLastSuggestions().get(position).toString();
                         fromSearchBar.setText(suggestion);

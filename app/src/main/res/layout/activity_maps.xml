@@ -1,74 +1,79 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:map="http://schemas.android.com/apk/res-auto"
+<FrameLayout xmlns:map="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_height="match_parent"
     android:layout_width="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
     xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <fragment
+        android:id="@+id/map"
+        android:name="com.google.android.gms.maps.SupportMapFragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".MapsActivity" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-
+        android:orientation="vertical"
         >
 
         <LinearLayout
+            android:layout_marginTop="20dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:orientation="vertical">
+            android:orientation="horizontal"
 
-            <com.mancj.materialsearchbar.MaterialSearchBar
-                style="@style/MaterialSearchBarLight"
-                app:mt_speechMode="false"
-                app:mt_hint="Search"
-                app:mt_maxSuggestionsCount="10"
+            >
+
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/fromSearchBar" />
-
-            <com.mancj.materialsearchbar.MaterialSearchBar
-                style="@style/MaterialSearchBarLight"
-                app:mt_speechMode="false"
-                app:mt_hint="Search"
-                app:mt_maxSuggestionsCount="10"
-                android:layout_width="match_parent"
                 android:layout_weight="1"
-                android:layout_height="wrap_content"
-                android:id="@+id/toSearchBar" />
+                android:orientation="vertical">
 
+                <com.mancj.materialsearchbar.MaterialSearchBar
+                    style="@style/MaterialSearchBarLight"
+                    app:mt_speechMode="false"
+                    app:mt_hint="Search"
+                    map:mt_roundedSearchBarEnabled="true"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
+                    app:mt_maxSuggestionsCount="10"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/fromSearchBar" />
+
+                <com.mancj.materialsearchbar.MaterialSearchBar
+                    style="@style/MaterialSearchBarLight"
+                    app:mt_speechMode="false"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
+                    map:mt_roundedSearchBarEnabled="true"
+                    app:mt_hint="Search"
+                    app:mt_maxSuggestionsCount="10"
+                    android:layout_width="match_parent"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/toSearchBar" />
+
+
+
+            </LinearLayout>
+
+            <Button
+                android:id="@+id/B_search"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_gravity="center_vertical"
+                android:layout_weight="4"
+                android:onClick="onClick"
+                android:text="Search" />
 
 
         </LinearLayout>
-
-        <Button
-            android:id="@+id/B_search"
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:layout_gravity="center_vertical"
-            android:layout_weight="4"
-            android:onClick="onClick"
-            android:text="Search" />
-
-
-    </LinearLayout>
-
-
-
-
-
-    <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        >
-        <fragment
-            android:id="@+id/map"
-            android:name="com.google.android.gms.maps.SupportMapFragment"
-            android:layout_width="match_parent"
-            android:layout_height="635dp"
-            tools:context=".MapsActivity" />
 
         <LinearLayout
             android:background="@drawable/rectangle"
@@ -76,7 +81,7 @@
             android:visibility="gone"
             android:layout_width="200dp"
             android:layout_height="100dp"
-            android:layout_marginTop="500dp"
+            android:layout_marginTop="300dp"
             android:layout_gravity="center_horizontal"
             android:orientation="vertical"
             >
@@ -99,10 +104,11 @@
 
         </LinearLayout>
 
-    </FrameLayout>
+
+    </LinearLayout>
 
 
 
 
 
-</LinearLayout>
+</FrameLayout>
