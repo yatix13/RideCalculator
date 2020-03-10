@@ -81,9 +81,11 @@
             android:visibility="gone"
             android:layout_width="200dp"
             android:layout_height="100dp"
-            android:layout_marginTop="300dp"
+            android:layout_marginTop="350dp"
             android:layout_gravity="center_horizontal"
             android:orientation="vertical"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp"
             >
 
             <TextView
@@ -92,6 +94,9 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:id="@+id/TV_distance"
+                android:textColor="@color/quantum_black_100"
+                android:textSize="18sp"
+                android:layout_marginBottom="10dp"
                 />
             <Button
                 android:visibility="gone"
@@ -100,7 +105,7 @@
                 android:layout_gravity="center"
                 android:id="@+id/B_ok"
                 android:onClick="onOKClick"
-                android:text="OK"/>
+                android:text="Next"/>
 
         </LinearLayout>
 
