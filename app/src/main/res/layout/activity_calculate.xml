@@ -1,6 +1,142 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    >
+
+    <ImageView
+        android:id="@+id/VehicleIV"
+        android:src="@drawable/carimage2"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:layout_gravity="center"
+        android:layout_marginTop="0dp"
+        />
+
+    <RadioGroup
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/RB_fuelType"
+        android:orientation="horizontal"
+        android:layout_marginTop="30dp"
+        android:gravity="center"
+        >
+        <RadioButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/RB_petrol"
+            android:text="Petrol"
+            android:onClick="onRadioButtonClicked"
+            />
+        <RadioButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/RB_diesel"
+            android:text="Diesel"
+            android:onClick="onRadioButtonClicked"
+            />
+        <RadioButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/RB_CNG"
+            android:text="CNG"
+            android:onClick="onRadioButtonClicked"
+            />
+
+    </RadioGroup>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="70dp"
+        android:layout_marginTop="30dp"
+        android:orientation="horizontal"
+        android:gravity="center"
+        >
+        <TextView
+            android:background="@drawable/rectangle"
+            android:layout_width="150dp"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:textSize="18sp"
+            android:id="@+id/TV_distance"
+            />
+        <TextView
+            android:background="@drawable/rectangle"
+            android:layout_width="150dp"
+            android:layout_height="match_parent"
+            android:id="@+id/TV_cityName"
+            android:textSize="18sp"
+            android:gravity="center"
+            android:layout_marginLeft="50dp"
+            />
+    </LinearLayout>
+
+    <ProgressBar
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:id="@+id/progressBar"/>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="70dp"
+        android:layout_marginTop="30dp"
+        android:orientation="horizontal"
+        android:gravity="center"
+        >
+        <EditText
+            android:background="@drawable/rectangle"
+            android:layout_width="150dp"
+            android:layout_height="match_parent"
+            android:id="@+id/TF_average"
+            android:hint="Average"
+            android:textSize="18sp"
+            android:gravity="center"
+            />
+        <TextView
+            android:background="@drawable/rectangle"
+            android:layout_width="150dp"
+            android:layout_height="match_parent"
+            android:id="@+id/TV_fuelPrice"
+            android:gravity="center"
+            android:textSize="18sp"
+            android:layout_marginLeft="50dp"/>
+    </LinearLayout>
+
+
+    <Button
+        android:layout_marginTop="30dp"
+        android:layout_width="200dp"
+        android:text="Calculate"
+        android:textColor="@color/white"
+        android:layout_height="50dp"
+        android:id="@+id/B_calculate"
+        android:onClick="onClick"
+        android:layout_gravity="center"
+        android:background="@drawable/rectangle_small_blue"
+        />
+
+    <TextView
+        android:background="@drawable/rectangle"
+        android:layout_width="200dp"
+        android:layout_height="50dp"
+        android:id="@+id/TV_result"
+        android:text="Fuel Cost"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:textSize="18sp"
+        android:textColor="@color/quantum_black_100"
+        android:layout_marginTop="30dp"
+        />
+</LinearLayout>
+
+
+
+
+
+
+<!---
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
 
     <TextView
@@ -75,3 +211,4 @@
         android:textSize="24sp"
         />
 </LinearLayout>
+-->

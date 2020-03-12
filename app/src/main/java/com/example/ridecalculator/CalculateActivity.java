@@ -6,6 +6,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ProgressBar;
+import android.widget.RadioButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -23,12 +24,15 @@ import java.text.DecimalFormat;
 
 public class CalculateActivity extends AppCompatActivity {
 
-    private TextView tv_distance, tv_petrolprice, tv_result;
+    private TextView tv_distance, tv_fuelPrice, tv_result;
     private EditText tf_average;
-    private double distance, avg, petrolPrice;
+    private double distance, avg, fuelPrice;
     private ProgressBar progressBar;
     private String cityName;
     private TextView tv_cityname;
+    private RadioButton  rb_petrol, rb_diesel, rb_CNG;
+    private String fuelType;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,7 +40,7 @@ public class CalculateActivity extends AppCompatActivity {
         setContentView(R.layout.activity_calculate);
 
         tv_distance = findViewById(R.id.TV_distance);
-        tv_petrolprice = findViewById(R.id.TV_petrol_price);
+        tv_fuelPrice = findViewById(R.id.TV_fuelPrice);
         tf_average = findViewById(R.id.TF_average);
         tv_result = findViewById(R.id.TV_result);
         progressBar = findViewById(R.id.progressBar);
@@ -51,14 +55,40 @@ public class CalculateActivity extends AppCompatActivity {
          */
 
         String d = getIntent().getStringExtra("distance");
+        Log.d("dhere",d);
+        //Converting the distance from string to double for calculation purpose
+        if(d.indexOf(',') != -1) //to check if distance string contains (comma)
+        {
+            int index = d.indexOf(',');
+            d = d.substring(0,index)+d.substring(index+1,d.length());
+        }
         distance = Double.parseDouble(d.substring(0, d.length()-3));
         cityName = getIntent().getStringExtra("cityName");
         tv_cityname.setText(cityName);
         tv_distance.setText(d);
         getJSON("https://polyphyodont-bets.000webhostapp.com/fetch_petrol_price.php");
-        Log.d("petrolprice",petrolPrice+"");
+        Log.d("fuelPrice",fuelPrice+"");
 
 
+    }
+
+    public void onRadioButtonClicked(View v){
+
+        boolean isSelected = v.isSelected();
+        switch (v.getId()){
+            case R.id.RB_petrol: if(isSelected){
+                fuelType = "Petrol";
+            }
+            break;
+            case R.id.RB_diesel: if(isSelected){
+                fuelType = "Diesel";
+            }
+                break;
+            case R.id.RB_CNG: if(isSelected){
+                fuelType = "CNG";
+            }
+                break;
+        }
     }
 
     public void onClick(View v){
@@ -67,10 +97,10 @@ public class CalculateActivity extends AppCompatActivity {
             avg = Double.parseDouble(a);
             DecimalFormat df = new DecimalFormat("#.##");
             double lits = distance/avg;
-            double cost = lits*petrolPrice;
+            double cost = lits*fuelPrice;
             cost = Double.parseDouble(df.format(cost));
 
-            tv_result.setText("Trip cost = ₹ "+cost);
+            tv_result.setText("₹ "+cost);
 
 
         }
@@ -110,11 +140,12 @@ public class CalculateActivity extends AppCompatActivity {
 
                         JSONObject object = jsonArray.getJSONObject(i);
                         String city = object.getString("city");
-                        if(city.equalsIgnoreCase("Mumbai")){
+                        String type = object.getString("type");
+                        if(city.equalsIgnoreCase("Mumbai") && fuelType.equalsIgnoreCase(type)){
 
-                            petrolPrice = object.getDouble("price");
+                            fuelPrice = object.getDouble("price");
                             progressBar.setVisibility(View.GONE);
-                            tv_petrolprice.setText(petrolPrice+"");
+                            tv_fuelPrice.setText("₹ "+fuelPrice+"");
 
                             break;
                         }
