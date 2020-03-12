@@ -66,8 +66,7 @@ public class CalculateActivity extends AppCompatActivity {
         cityName = getIntent().getStringExtra("cityName");
         tv_cityname.setText(cityName);
         tv_distance.setText(d);
-        getJSON("https://polyphyodont-bets.000webhostapp.com/fetch_petrol_price.php");
-        Log.d("fuelPrice",fuelPrice+"");
+
 
 
     }
@@ -93,6 +92,9 @@ public class CalculateActivity extends AppCompatActivity {
 
     public void onClick(View v){
         if(v.getId() == R.id.B_calculate){
+            progressBar.setVisibility(View.VISIBLE);
+            getJSON("https://polyphyodont-bets.000webhostapp.com/fetch_petrol_price.php");
+            Log.d("fuelPrice",fuelPrice+"");
             String a = tf_average.getText().toString();
             avg = Double.parseDouble(a);
             DecimalFormat df = new DecimalFormat("#.##");
