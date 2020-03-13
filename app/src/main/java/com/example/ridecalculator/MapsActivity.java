@@ -90,6 +90,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private String searchResult;
     private double distance;
     private String cityName;
+    private GetDirectionsData directionsData;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -170,9 +171,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                             return;
                         AutocompletePrediction selectedPrediction = predictionList.get(position);
                         String suggestion = materialSearchBar.getLastSuggestions().get(position).toString();
-                        materialSearchBar.setText(suggestion);
                         materialSearchBar.clearSuggestions();
                         materialSearchBar.hideSuggestionsList();
+                        materialSearchBar.setText(suggestion);
                         searchResult = suggestion;
 
                         hideKeyboard(MapsActivity.this, v);
@@ -292,14 +293,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         if(v.getId()==R.id.B_ok){
             Intent intent = new Intent(MapsActivity.this, CalculateActivity.class);
-            intent.putExtra("distance", GetDirectionsData.distance);
+            intent.putExtra("distance", directionsData.distance);
             intent.putExtra("cityName", GetCityName.cityName);
             startActivity(intent);
         }
     }
     public void onClick(View v){
         Object dataTransfer[]= new Object[3];
-        GetDirectionsData directionsData = new GetDirectionsData();
+        directionsData = new GetDirectionsData();
 
         if(v.getId() == R.id.B_search){
 
@@ -387,7 +388,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 bottomLayout.setVisibility(View.VISIBLE);
                 TextView tv = findViewById(R.id.TV_distance);
                 tv.setVisibility(View.VISIBLE);
-                tv.setText("Distance : "+GetDirectionsData.distance);
+                tv.setText("Distance : "+directionsData.distance);
 
                 Button B_OK = findViewById(R.id.B_ok);
                 B_OK.setVisibility(View.VISIBLE);
@@ -464,7 +465,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
         String startLocation = startLatitude+","+startLongitude;
-        //fromSearchBar.setText(startLocation);
+        fromSearchBar.setText(startLocation);
 
         //fetching city name
         fetchCityNameFromLatLng(latLng);
@@ -505,7 +506,17 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         dataTransfer[2] = latlng;
 
         getCityName.execute(dataTransfer);
+        try {
+            Thread.sleep(3000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
 
+        /** TODO : fix this -> from search bar shows lat lang, instead it should show address -> this is causing error
+        String address = GetCityName.address;
+        fromSearchBar.setText(address);
+        Log.d("addresshere",address);
+        **/
 
     }
 

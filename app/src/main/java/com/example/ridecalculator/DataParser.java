@@ -13,10 +13,21 @@ public class DataParser {
     public String getAddress(String jsonData)
     {
         String address = "";
-
         try {
             JSONObject jsonObject = new JSONObject(jsonData);
-            Log.d("jsonData",jsonData);
+            JSONArray jsonArray = jsonObject.getJSONArray("results").getJSONObject(0).getJSONArray("address_components");
+            for(int i = 0;i<jsonArray.length();i++)
+            {
+                JSONObject object = jsonArray.getJSONObject(i);
+                Log.d("types",object.getString("types"));
+                if(object.getString("types").indexOf("\"route\"") != -1)
+                {
+                    address = object.getString("long_name");
+                    break;
+                }
+            }
+            Log.d("address",address);
+
         } catch (JSONException e) {
             e.printStackTrace();
         }

@@ -21,7 +21,7 @@ public class GetDirectionsData extends AsyncTask<Object, String, String> {
     GoogleMap mMap;
     String url;
     String googleDirectionsData;
-    static String duration, distance;
+    String duration, distance;
     LatLng latLng;
 
     @Override
