@@ -10,15 +10,29 @@ import java.util.HashMap;
 
 public class DataParser {
 
+    public String getAddress(String jsonData)
+    {
+        String address = "";
+
+        try {
+            JSONObject jsonObject = new JSONObject(jsonData);
+            Log.d("jsonData",jsonData);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return address;
+
+    }
+
     public String getCityName(String jsonData)
     {
         String cityName = "";
         try {
             JSONObject jsonObject = new JSONObject(jsonData);
+            Log.d("jsonData",jsonData);
             JSONArray jsonArray = jsonObject.getJSONArray("results").getJSONObject(0).getJSONArray("address_components");
             for(int i = 0;i<jsonArray.length();i++)
             {
-
                 JSONObject object = jsonArray.getJSONObject(i);
                 Log.d("types",object.getString("types"));
                 if(object.getString("types").indexOf("\"locality\"") != -1)

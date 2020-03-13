@@ -464,7 +464,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
         String startLocation = startLatitude+","+startLongitude;
-        fromSearchBar.setText(startLocation);
+        //fromSearchBar.setText(startLocation);
 
         //fetching city name
         fetchCityNameFromLatLng(latLng);

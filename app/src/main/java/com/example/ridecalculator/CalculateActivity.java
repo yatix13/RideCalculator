@@ -73,7 +73,7 @@ public class CalculateActivity extends AppCompatActivity {
 
     public void onRadioButtonClicked(View v){
 
-        boolean isSelected = v.isSelected();
+        boolean isSelected = ((RadioButton)v).isChecked();
         switch (v.getId()){
             case R.id.RB_petrol: if(isSelected){
                 fuelType = "Petrol";
@@ -93,18 +93,8 @@ public class CalculateActivity extends AppCompatActivity {
     public void onClick(View v){
         if(v.getId() == R.id.B_calculate){
             progressBar.setVisibility(View.VISIBLE);
+            Log.d("fuel type",fuelType);
             getJSON("https://polyphyodont-bets.000webhostapp.com/fetch_petrol_price.php");
-            Log.d("fuelPrice",fuelPrice+"");
-            String a = tf_average.getText().toString();
-            avg = Double.parseDouble(a);
-            DecimalFormat df = new DecimalFormat("#.##");
-            double lits = distance/avg;
-            double cost = lits*fuelPrice;
-            cost = Double.parseDouble(df.format(cost));
-
-            tv_result.setText("₹ "+cost);
-
-
         }
 
     }
@@ -148,6 +138,16 @@ public class CalculateActivity extends AppCompatActivity {
                             fuelPrice = object.getDouble("price");
                             progressBar.setVisibility(View.GONE);
                             tv_fuelPrice.setText("₹ "+fuelPrice+"");
+                            Log.d("fuelPrice",fuelPrice+"");
+
+                            String a = tf_average.getText().toString();
+                            avg = Double.parseDouble(a);
+                            DecimalFormat df = new DecimalFormat("#.##");
+                            double lits = distance/avg;
+                            double cost = lits*fuelPrice;
+                            cost = Double.parseDouble(df.format(cost));
+
+                            tv_result.setText("₹ "+cost);
 
                             break;
                         }
