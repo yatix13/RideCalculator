@@ -3,10 +3,13 @@ package com.example.ridecalculator;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.util.Log;
+import android.view.View;
+import android.widget.ProgressBar;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
@@ -23,6 +26,8 @@ public class GetDirectionsData extends AsyncTask<Object, String, String> {
     String googleDirectionsData;
     String duration, distance;
     LatLng latLng;
+    ProgressBar progressBar;
+
 
     @Override
     protected String doInBackground(Object... objects) {
@@ -41,6 +46,7 @@ public class GetDirectionsData extends AsyncTask<Object, String, String> {
         return googleDirectionsData;
     }
 
+
     @Override
     protected void onPostExecute(String s) {
 
@@ -52,12 +58,14 @@ public class GetDirectionsData extends AsyncTask<Object, String, String> {
         durationDistance = parser.getDuration(s);
         directionsList = parser.parseDirections(s);
         distance = durationDistance.get("distance");
+        Log.d("distance 1",distance);
 
         MarkerOptions mo = new MarkerOptions();
         mo.position(latLng);
         mo.title("Destination");
         mo.snippet("Distance = "+ durationDistance.get("distance")+" & "+"Duration = "+durationDistance.get("duration"));
-        mMap.addMarker(mo);
+        Marker marker = mMap.addMarker(mo);
+        marker.showInfoWindow();
         mMap.animateCamera(CameraUpdateFactory.newLatLng(latLng));
 
 

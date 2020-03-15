@@ -92,9 +92,24 @@ public class CalculateActivity extends AppCompatActivity {
 
     public void onClick(View v){
         if(v.getId() == R.id.B_calculate){
-            progressBar.setVisibility(View.VISIBLE);
-            Log.d("fuel type",fuelType);
-            getJSON("https://polyphyodont-bets.000webhostapp.com/fetch_petrol_price.php");
+            RadioButton rb1 = findViewById(R.id.RB_petrol);
+            RadioButton rb2 = findViewById(R.id.RB_diesel);
+            RadioButton rb3 = findViewById(R.id.RB_CNG);
+
+            if(!rb1.isChecked() && !rb2.isChecked() && !rb3.isChecked())
+            {
+                Toast.makeText(getApplicationContext(), "Select fuel type", Toast.LENGTH_SHORT).show();
+            }
+            else if(tf_average.getText().toString().matches(""))
+            {
+                Toast.makeText(getApplicationContext(),"Enter vehicle average", Toast.LENGTH_SHORT).show();
+            }
+            else
+            {
+                progressBar.setVisibility(View.VISIBLE);
+                Log.d("fuel type",fuelType);
+                getJSON("https://polyphyodont-bets.000webhostapp.com/fetch_petrol_price.php");
+            }
         }
 
     }

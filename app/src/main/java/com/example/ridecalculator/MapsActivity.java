@@ -25,6 +25,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -68,6 +69,9 @@ import com.mancj.materialsearchbar.adapter.SuggestionsAdapter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback,
         GoogleApiClient.ConnectionCallbacks,
@@ -110,6 +114,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         searchBar = findViewById(R.id.search_bar);
         materialSearchBar = findViewById(R.id.toSearchBar);
         fromSearchBar = findViewById(R.id.fromSearchBar);
+
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(MapsActivity.this);
         Places.initialize(MapsActivity.this, "AIzaSyBRYvFByo5BOJ7PvJqdmNSI4oSj1WZ56RM");
 
@@ -334,7 +339,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 endLatitude = addressList.get(0).getLatitude();
                 endLongitude = addressList.get(0).getLongitude();
 
-                LatLng fromlatlng;
+                LatLng fromlatlng = null;
                 if(!fromLocation.equals(""))
                 {
                     try {
@@ -361,14 +366,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
                 float results[] = new float[10];
                 Location.distanceBetween(startLatitude, startLongitude, endLatitude, endLongitude, results);
+                fetchCityNameFromLatLng(fromlatlng);
 
                 latlng = new LatLng(endLatitude, endLongitude);
 
                 mo.position(latlng);
 
-                mo.title("Destination");
-                mo.snippet("Distance ="+ results[0]/1000 + " km");
-                Log.d("distance = ", results[0]+"");
+
                 //mMap.addMarker(mo);
                 //mMap.animateCamera(CameraUpdateFactory.newLatLng(latlng));
 
@@ -377,18 +381,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 dataTransfer[1] = getDirectionsUrl();
                 dataTransfer[2] = latlng;
 
-                directionsData.execute(dataTransfer);
 
-                try {
-                    Thread.sleep(1000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                LinearLayout bottomLayout = findViewById(R.id.bottom_layout);
-                bottomLayout.setVisibility(View.VISIBLE);
-                TextView tv = findViewById(R.id.TV_distance);
-                tv.setVisibility(View.VISIBLE);
-                tv.setText("Distance : "+directionsData.distance);
+                directionsData.execute(dataTransfer);
 
                 Button B_OK = findViewById(R.id.B_ok);
                 B_OK.setVisibility(View.VISIBLE);
@@ -465,10 +459,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
         String startLocation = startLatitude+","+startLongitude;
-        fromSearchBar.setText(startLocation);
+        fromSearchBar.setText("Current Location");
 
         //fetching city name
-        fetchCityNameFromLatLng(latLng);
+        //fetchCityNameFromLatLng(latLng);
 
 
 
