@@ -342,26 +342,29 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 LatLng fromlatlng = null;
                 if(!fromLocation.equals(""))
                 {
-                    try {
-                        fromAddressList = geocoder.getFromLocationName(fromLocation, 5);
-                    }catch(IOException e){
-                        e.printStackTrace();
-                    }
-
-
-                    for(int i=0; i<fromAddressList.size(); i++)
+                    if(!fromLocation.equalsIgnoreCase("current location"))
                     {
-                        Address myAddress = fromAddressList.get(i);
-                        fromlatlng = new LatLng(myAddress.getLatitude(), myAddress.getLongitude());
+                        try {
+                            fromAddressList = geocoder.getFromLocationName(fromLocation, 5);
+                        }catch(IOException e){
+                            e.printStackTrace();
+                        }
+
+                        for(int i=0; i<fromAddressList.size(); i++)
+                        {
+                            Address myAddress = fromAddressList.get(i);
+                            fromlatlng = new LatLng(myAddress.getLatitude(), myAddress.getLongitude());
 
 
-                        mo.position(fromlatlng);
-                        mo.title("Your search results");
-                        //mMap.addMarker(mo);mMap.animateCamera(CameraUpdateFactory.newLatLng(latlng));
+                            mo.position(fromlatlng);
+                            mo.title("Your search results");
+                            //mMap.addMarker(mo);mMap.animateCamera(CameraUpdateFactory.newLatLng(latlng));
+                        }
+
+                        startLatitude = fromAddressList.get(0).getLatitude();
+                        startLongitude = fromAddressList.get(0).getLongitude();
                     }
 
-                    startLatitude = fromAddressList.get(0).getLatitude();
-                    startLongitude = fromAddressList.get(0).getLongitude();
                 }
 
                 float results[] = new float[10];
@@ -384,11 +387,17 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
                 directionsData.execute(dataTransfer);
 
-                Button B_OK = findViewById(R.id.B_ok);
-                B_OK.setVisibility(View.VISIBLE);
+                final Button B_OK = findViewById(R.id.B_ok);
+
+                Activity act = (Activity)this;
+                act.runOnUiThread(new Runnable(){
+                    @Override
+                    public void run() {
+                        B_OK.setVisibility(View.VISIBLE);
+
+                    } });
             }
         }
-
     }
 
     @Override

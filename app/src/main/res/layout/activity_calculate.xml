@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_height="match_parent"
+    android:background="@color/gray"
     android:layout_width="match_parent">
 <LinearLayout
     android:orientation="vertical" android:layout_width="match_parent"
@@ -9,9 +10,9 @@
 
     <ImageView
         android:id="@+id/VehicleIV"
-        android:src="@drawable/carimage2"
+        android:src="@drawable/carimage3"
         android:layout_width="match_parent"
-        android:layout_height="200dp"
+        android:layout_height="210dp"
         android:layout_gravity="center"
         android:layout_marginTop="0dp"
         />
@@ -28,6 +29,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/RB_petrol"
+            android:buttonTint="@color/white"
+            android:textColor="@color/white"
             android:text="Petrol"
             android:onClick="onRadioButtonClicked"
             />
@@ -35,6 +38,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/RB_diesel"
+            android:buttonTint="@color/white"
+            android:textColor="@color/white"
             android:text="Diesel"
             android:onClick="onRadioButtonClicked"
             />
@@ -42,44 +47,54 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/RB_CNG"
+            android:buttonTint="@color/white"
+            android:textColor="@color/white"
             android:text="CNG"
             android:onClick="onRadioButtonClicked"
             />
 
     </RadioGroup>
 
-    <LinearLayout
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="70dp"
-        android:layout_marginTop="30dp"
-        android:orientation="horizontal"
-        android:gravity="center"
-        >
-        <TextView
-            android:background="@drawable/rectangle"
-            android:layout_width="150dp"
-            android:layout_height="match_parent"
-            android:gravity="center"
-            android:textSize="18sp"
-            android:id="@+id/TV_distance"
-            />
-        <TextView
-            android:background="@drawable/rectangle"
-            android:layout_width="150dp"
-            android:layout_height="match_parent"
-            android:id="@+id/TV_cityName"
-            android:textSize="18sp"
-            android:gravity="center"
-            android:layout_marginLeft="50dp"
-            />
-    </LinearLayout>
-
-    <ProgressBar
-        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:visibility="gone"
-        android:id="@+id/progressBar"/>
+        >
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="70dp"
+            android:layout_marginTop="30dp"
+            android:orientation="horizontal"
+            android:gravity="center"
+            >
+            <TextView
+                android:background="@drawable/rectangle"
+                android:layout_width="150dp"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:textColor="@color/white"
+                android:textSize="18sp"
+                android:id="@+id/TV_distance"
+                />
+            <TextView
+                android:background="@drawable/rectangle"
+                android:layout_width="150dp"
+                android:layout_height="match_parent"
+                android:id="@+id/TV_cityName"
+                android:textSize="18sp"
+                android:textColor="@color/white"
+                android:gravity="center"
+                android:layout_marginLeft="50dp"
+                />
+        </LinearLayout>
+
+        <ProgressBar
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:visibility="gone"
+            android:id="@+id/progressBar"/>
+    </FrameLayout>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="70dp"
@@ -90,6 +105,9 @@
         <EditText
             android:background="@drawable/rectangle"
             android:layout_width="150dp"
+            android:inputType="number"
+            android:textColor="@color/white"
+            android:textColorHint="@color/white"
             android:layout_height="match_parent"
             android:id="@+id/TF_average"
             android:hint="Average"
@@ -101,6 +119,7 @@
             android:layout_width="150dp"
             android:layout_height="match_parent"
             android:id="@+id/TV_fuelPrice"
+            android:textColor="@color/white"
             android:gravity="center"
             android:textSize="18sp"
             android:layout_marginLeft="50dp"/>
@@ -125,11 +144,11 @@
         android:layout_height="50dp"
         android:id="@+id/TV_result"
         android:text="Fuel Cost"
+        android:textColor="@color/white"
         android:layout_gravity="center"
         android:layout_marginBottom="50dp"
         android:gravity="center"
         android:textSize="18sp"
-        android:textColor="@color/quantum_black_100"
         android:layout_marginTop="30dp"
         />
 </LinearLayout>

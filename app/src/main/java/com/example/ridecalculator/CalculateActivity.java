@@ -1,5 +1,6 @@
 package com.example.ridecalculator;
 
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -9,6 +10,7 @@ import android.widget.ProgressBar;
 import android.widget.RadioButton;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.VideoView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -32,6 +34,7 @@ public class CalculateActivity extends AppCompatActivity {
     private TextView tv_cityname;
     private RadioButton  rb_petrol, rb_diesel, rb_CNG;
     private String fuelType;
+    private VideoView videoView;
 
 
     @Override
@@ -45,6 +48,12 @@ public class CalculateActivity extends AppCompatActivity {
         tv_result = findViewById(R.id.TV_result);
         progressBar = findViewById(R.id.progressBar);
         tv_cityname = findViewById(R.id.TV_cityName);
+        /*videoView = (VideoView)findViewById(R.id.VehicleIV);
+        String path = "android.resource://"+getPackageName()+"/"+R.raw.car_loop;
+        videoView.setVideoURI(Uri.parse(path));
+        videoView.start();
+
+         */
 
         /*
         1. average fuel consumption
@@ -53,7 +62,6 @@ public class CalculateActivity extends AppCompatActivity {
         4. City name ->
         5. Petrol Price ->
          */
-
         String d = getIntent().getStringExtra("distance");
         Log.d("dhere",d);
         //Converting the distance from string to double for calculation purpose
@@ -170,7 +178,6 @@ public class CalculateActivity extends AppCompatActivity {
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-                Toast.makeText(getApplicationContext(), s, Toast.LENGTH_SHORT).show();
             }
 
             //in this method we are fetching the json string

@@ -20,6 +20,8 @@ android {
 }
 
 dependencies {
+    implementation 'com.squareup.retrofit2:retrofit:2.3.0'
+    implementation 'com.squareup.retrofit2:converter-gson:2.3.0'
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation 'com.google.android.gms:play-services-location:17.0.0'// Added dependencies of locations from GoogelPlay Services.
     implementation 'androidx.appcompat:appcompat:1.0.2'
