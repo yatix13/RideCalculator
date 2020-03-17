@@ -24,6 +24,10 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.text.DecimalFormat;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
 public class CalculateActivity extends AppCompatActivity {
 
     private TextView tv_distance, tv_fuelPrice, tv_result;
@@ -116,7 +120,33 @@ public class CalculateActivity extends AppCompatActivity {
             {
                 progressBar.setVisibility(View.VISIBLE);
                 Log.d("fuel type",fuelType);
-                getJSON("https://polyphyodont-bets.000webhostapp.com/fetch_petrol_price.php");
+                ApiInterface apiService = ApiClient.getRetrofitInstance().create(ApiInterface.class);
+                Call<FuelPrice> call = apiService.fetchFuelPrice(cityName, fuelType);
+                call.enqueue(new Callback<FuelPrice>() {
+                    @Override
+                    public void onResponse(Call<FuelPrice> call, Response<FuelPrice> response) {
+                        double fuelPrice = response.body().getPrice();
+                        progressBar.setVisibility(View.GONE);
+                        tv_fuelPrice.setText("₹ "+fuelPrice+"");
+                        Log.d("fuelPrice",fuelPrice+"");
+
+                        String a = tf_average.getText().toString();
+                        avg = Double.parseDouble(a);
+                        DecimalFormat df = new DecimalFormat("#.##");
+                        double lits = distance/avg;
+                        double cost = lits*fuelPrice;
+                        cost = Double.parseDouble(df.format(cost));
+
+                        tv_result.setText("₹ "+cost);
+
+                    }
+
+                    @Override
+                    public void onFailure(Call<FuelPrice> call, Throwable t) {
+
+                    }
+                });
+                //getJSON("https://polyphyodont-bets.000webhostapp.com/fetch_petrol_price.php");
             }
         }
 
