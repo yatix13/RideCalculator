@@ -36,6 +36,18 @@
                 android:layout_weight="1"
                 android:orientation="vertical">
 
+                <com.arlib.floatingsearchview.FloatingSearchView
+                    android:id="@+id/fromSearchBar"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    app:floatingSearch_searchBarMarginLeft="10dp"
+                    app:floatingSearch_searchBarMarginRight="10dp"
+                    app:floatingSearch_searchHint="Search..."
+                    app:floatingSearch_suggestionsListAnimDuration="250"
+                    app:floatingSearch_showSearchKey="false"
+                    app:floatingSearch_leftActionMode="showHamburger"
+                    app:floatingSearch_close_search_on_keyboard_dismiss="true"/>
+                <!--
                 <com.mancj.materialsearchbar.MaterialSearchBar
                     style="@style/MaterialSearchBarLight"
                     app:mt_speechMode="false"
@@ -47,6 +59,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:id="@+id/fromSearchBar" />
+                    -->
 
                 <com.mancj.materialsearchbar.MaterialSearchBar
                     style="@style/MaterialSearchBarLight"

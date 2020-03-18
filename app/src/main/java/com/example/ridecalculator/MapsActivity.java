@@ -17,6 +17,7 @@ import android.location.Location;
 
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Parcel;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -30,6 +31,8 @@ import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.arlib.floatingsearchview.FloatingSearchView;
+import com.arlib.floatingsearchview.suggestions.model.SearchSuggestion;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -79,7 +82,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         LocationListener {
 
     private SearchView searchBar;
-    private MaterialSearchBar materialSearchBar , fromSearchBar;
+    private MaterialSearchBar materialSearchBar;
+    private FloatingSearchView fromSearchBar;
     private GoogleMap mMap;
     private GoogleApiClient client;
     private LocationRequest locationRequest;
@@ -89,12 +93,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private Marker currentLocationMarker;
     private FusedLocationProviderClient fusedLocationProviderClient;
     private List<String> suggestionList;
+    private List<SearchSuggestion> suggestionList2;
     private final int REQUEST_LOCATION_CODE = 99;
     private double endLatitude, endLongitude, startLatitude, startLongitude;
     private String searchResult;
     private double distance;
     private String cityName;
     private GetDirectionsData directionsData;
+    private String fromSuggestion;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -111,7 +117,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mapFragment.getMapAsync(this);
         searchButton = findViewById(R.id.B_search);
 
-        searchBar = findViewById(R.id.search_bar);
+        //searchBar = findViewById(R.id.search_bar);
         materialSearchBar = findViewById(R.id.toSearchBar);
         fromSearchBar = findViewById(R.id.fromSearchBar);
 
@@ -199,6 +205,85 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             }
         });
 
+        fromSearchBar.setOnQueryChangeListener(new FloatingSearchView.OnQueryChangeListener() {
+            @Override
+            public void onSearchTextChanged(String oldQuery, String newQuery) {
+                FindAutocompletePredictionsRequest request = FindAutocompletePredictionsRequest.builder()
+                        .setCountry("IN")
+                        .setTypeFilter(TypeFilter.ADDRESS)
+                        .setSessionToken(token)
+                        .setQuery(newQuery)
+                        .build();
+                Log.d("autocomplete request", request.toString());
+
+                placesClient.findAutocompletePredictions(request).addOnCompleteListener(new OnCompleteListener<FindAutocompletePredictionsResponse>() {
+                    @Override
+                    public void onComplete(@NonNull Task<FindAutocompletePredictionsResponse> task) {
+                        if(task.isSuccessful()){
+                            FindAutocompletePredictionsResponse response = task.getResult();
+                            Log.d("suggestionResponse", response.toString());
+                            if(response != null){
+                                predictionList = response.getAutocompletePredictions();
+                                suggestionList2 = new ArrayList<>();
+                                for(int i=0; i<predictionList.size(); i++){
+
+                                    AutocompletePrediction prediction = predictionList.get(i);
+                                    final String one = prediction.getFullText(null).toString();
+                                    SearchSuggestion ss = new SearchSuggestion() {
+                                        @Override
+                                        public String getBody() {
+                                            return one;
+                                        }
+
+                                        @Override
+                                        public int describeContents() {
+                                            return 0;
+                                        }
+
+                                        @Override
+                                        public void writeToParcel(Parcel dest, int flags) {
+
+                                        }
+                                    };
+                                    suggestionList2.add(ss);
+                                }
+
+                                fromSearchBar.swapSuggestions(suggestionList2);
+
+
+                            }
+                        }
+                        else{
+                            Log.d("error","Auto complete request fail");
+                        }
+                    }
+                });
+
+                fromSearchBar.setOnSearchListener(new FloatingSearchView.OnSearchListener() {
+                    @Override
+                    public void onSuggestionClicked(SearchSuggestion searchSuggestion) {
+
+                        String suggestion = searchSuggestion.getBody();
+                        fromSuggestion = suggestion;
+                        Log.d("suggestion",fromSuggestion);
+                        fromSearchBar.setSearchText(fromSuggestion);
+                        //fromSearchBar.clearSuggestions();
+                        searchResult = suggestion;
+
+                        hideKeyboard(MapsActivity.this, fromSearchBar);
+                    }
+
+                    @Override
+                    public void onSearchAction(String currentQuery) {
+
+                    }
+                });
+
+
+            }
+        });
+
+        /*
         fromSearchBar.addTextChangeListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -257,6 +342,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         String suggestion = fromSearchBar.getLastSuggestions().get(position).toString();
                         fromSearchBar.setText(suggestion);
                         fromSearchBar.clearSuggestions();
+                        fromSearchBar.hideSuggestionsList();
                         searchResult = suggestion;
 
                         hideKeyboard(MapsActivity.this, v);
@@ -275,6 +361,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
             }
         });
+
+         */
     }
 
     public void hideKeyboard(Activity activity, View view)
@@ -310,7 +398,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         if(v.getId() == R.id.B_search){
 
             String toLocation = materialSearchBar.getText();
-            String fromLocation = fromSearchBar.getText();
+            String fromLocation = fromSuggestion;
             List<Address> addressList=null;
             List<Address> fromAddressList = null;
             MarkerOptions mo = new MarkerOptions();
@@ -468,7 +556,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
         String startLocation = startLatitude+","+startLongitude;
-        fromSearchBar.setText("Current Location");
+        //fromSearchBar.setText("Current Location");
 
         //fetching city name
         //fetchCityNameFromLatLng(latLng);
