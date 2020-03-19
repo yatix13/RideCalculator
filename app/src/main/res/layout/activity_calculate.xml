@@ -110,7 +110,7 @@
             android:textColorHint="@color/white"
             android:layout_height="match_parent"
             android:id="@+id/TF_average"
-            android:hint="Average"
+            android:hint="Enter Average"
             android:textSize="18sp"
             android:gravity="center"
             />
@@ -130,12 +130,12 @@
         android:layout_marginTop="30dp"
         android:layout_width="200dp"
         android:text="Calculate"
-        android:textColor="@color/white"
+        android:textColor="@color/colorPrimaryDark"
         android:layout_height="50dp"
         android:id="@+id/B_calculate"
         android:onClick="onClick"
         android:layout_gravity="center"
-        android:background="@drawable/rectangle_small_blue"
+        android:background="@drawable/rectangle_white"
         />
 
     <TextView

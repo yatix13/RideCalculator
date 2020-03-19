@@ -14,7 +14,6 @@
         android:layout_height="match_parent"
         tools:context=".MapsActivity" />
 
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -36,46 +35,38 @@
                 android:layout_weight="1"
                 android:orientation="vertical">
 
-                <com.arlib.floatingsearchview.FloatingSearchView
-                    android:id="@+id/fromSearchBar"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    app:floatingSearch_searchBarMarginLeft="10dp"
-                    app:floatingSearch_searchBarMarginRight="10dp"
-                    app:floatingSearch_searchHint="Search..."
-                    app:floatingSearch_suggestionsListAnimDuration="250"
-                    app:floatingSearch_showSearchKey="false"
-                    app:floatingSearch_leftActionMode="showHamburger"
-                    app:floatingSearch_close_search_on_keyboard_dismiss="true"/>
-                <!--
-                <com.mancj.materialsearchbar.MaterialSearchBar
-                    style="@style/MaterialSearchBarLight"
-                    app:mt_speechMode="false"
-                    app:mt_hint="Search"
-                    map:mt_roundedSearchBarEnabled="true"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginRight="10dp"
-                    app:mt_maxSuggestionsCount="10"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/fromSearchBar" />
-                    -->
 
-                <com.mancj.materialsearchbar.MaterialSearchBar
-                    style="@style/MaterialSearchBarLight"
-                    app:mt_speechMode="false"
-                    android:layout_marginTop="10dp"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginRight="10dp"
-                    map:mt_roundedSearchBarEnabled="true"
-                    app:mt_hint="Search"
-                    app:mt_maxSuggestionsCount="10"
+                <FrameLayout
                     android:layout_width="match_parent"
-                    android:layout_weight="1"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/toSearchBar" />
+                    android:layout_height="wrap_content">
+
+                    <com.arlib.floatingsearchview.FloatingSearchView
+                        android:id="@+id/toSearchBar"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        app:floatingSearch_searchBarMarginLeft="10dp"
+                        app:floatingSearch_searchBarMarginRight="10dp"
+                        map:floatingSearch_searchBarMarginTop="60dp"
+                        app:floatingSearch_searchHint="Search..."
+                        app:floatingSearch_suggestionsListAnimDuration="250"
+                        app:floatingSearch_showSearchKey="false"
+                        app:floatingSearch_leftActionMode="showHamburger"
+                        app:floatingSearch_close_search_on_keyboard_dismiss="true"/>
+
+                    <com.arlib.floatingsearchview.FloatingSearchView
+                        android:id="@+id/fromSearchBar"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        app:floatingSearch_searchBarMarginLeft="10dp"
+                        app:floatingSearch_searchBarMarginRight="10dp"
+                        app:floatingSearch_searchHint="Search..."
+                        app:floatingSearch_suggestionsListAnimDuration="250"
+                        app:floatingSearch_showSearchKey="false"
+                        app:floatingSearch_leftActionMode="showHamburger"
+                        app:floatingSearch_close_search_on_keyboard_dismiss="true"/>
 
 
+                </FrameLayout>
 
             </LinearLayout>
 
@@ -94,19 +85,21 @@
         </LinearLayout>
 
 
-        <Button
-            android:background="@drawable/rectangle_small_blue"
-            android:visibility="gone"
-            android:layout_marginTop="350dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:id="@+id/B_ok"
-            android:onClick="onOKClick"
-            android:textColor="@color/white"
-            android:text="Next"/>
+
 
     </LinearLayout>
+
+    <Button
+        android:background="@drawable/rectangle_small_blue"
+        android:visibility="gone"
+        android:layout_marginTop="300dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:id="@+id/B_ok"
+        android:onClick="onOKClick"
+        android:textColor="@color/white"
+        android:text="Next"/>
 
 
 

@@ -66,8 +66,7 @@ import com.google.android.libraries.places.api.net.FindAutocompletePredictionsRe
 import com.google.android.libraries.places.api.net.FindCurrentPlaceRequest;
 import com.google.android.libraries.places.api.net.FindCurrentPlaceResponse;
 import com.google.android.libraries.places.api.net.PlacesClient;
-import com.mancj.materialsearchbar.MaterialSearchBar;
-import com.mancj.materialsearchbar.adapter.SuggestionsAdapter;
+
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -82,7 +81,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         LocationListener {
 
     private SearchView searchBar;
-    private MaterialSearchBar materialSearchBar;
+    private FloatingSearchView materialSearchBar;
     private FloatingSearchView fromSearchBar;
     private GoogleMap mMap;
     private GoogleApiClient client;
@@ -100,7 +99,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private double distance;
     private String cityName;
     private GetDirectionsData directionsData;
-    private String fromSuggestion;
+    private String fromSuggestion, toSuggestion;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -128,6 +127,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         final PlacesClient placesClient = Places.createClient(MapsActivity.this);
 
 
+        /*
         materialSearchBar.addTextChangeListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -205,6 +205,85 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             }
         });
 
+
+         */
+        materialSearchBar.setOnQueryChangeListener(new FloatingSearchView.OnQueryChangeListener() {
+            @Override
+            public void onSearchTextChanged(String oldQuery, String newQuery) {
+                FindAutocompletePredictionsRequest request = FindAutocompletePredictionsRequest.builder()
+                        .setCountry("IN")
+                        .setTypeFilter(TypeFilter.ADDRESS)
+                        .setSessionToken(token)
+                        .setQuery(newQuery)
+                        .build();
+                Log.d("autocomplete request", request.toString());
+
+                placesClient.findAutocompletePredictions(request).addOnCompleteListener(new OnCompleteListener<FindAutocompletePredictionsResponse>() {
+                    @Override
+                    public void onComplete(@NonNull Task<FindAutocompletePredictionsResponse> task) {
+                        if(task.isSuccessful()){
+                            FindAutocompletePredictionsResponse response = task.getResult();
+                            Log.d("suggestionResponse", response.toString());
+                            if(response != null){
+                                predictionList = response.getAutocompletePredictions();
+                                suggestionList2 = new ArrayList<>();
+                                for(int i=0; i<predictionList.size(); i++){
+
+                                    AutocompletePrediction prediction = predictionList.get(i);
+                                    final String one = prediction.getFullText(null).toString();
+                                    SearchSuggestion ss = new SearchSuggestion() {
+                                        @Override
+                                        public String getBody() {
+                                            return one;
+                                        }
+
+                                        @Override
+                                        public int describeContents() {
+                                            return 0;
+                                        }
+
+                                        @Override
+                                        public void writeToParcel(Parcel dest, int flags) {
+
+                                        }
+                                    };
+                                    suggestionList2.add(ss);
+                                }
+
+                                materialSearchBar.swapSuggestions(suggestionList2);
+
+
+                            }
+                        }
+                        else{
+                            Log.d("error","Auto complete request fail");
+                        }
+                    }
+                });
+
+                materialSearchBar.setOnSearchListener(new FloatingSearchView.OnSearchListener() {
+                    @Override
+                    public void onSuggestionClicked(SearchSuggestion searchSuggestion) {
+
+                        String suggestion = searchSuggestion.getBody();
+                        toSuggestion = suggestion;
+                        Log.d("suggestion",toSuggestion);
+                        materialSearchBar.setSearchText(toSuggestion);
+                        //fromSearchBar.clearSuggestions();
+                        searchResult = suggestion;
+
+                        hideKeyboard(MapsActivity.this, materialSearchBar);
+                    }
+
+                    @Override
+                    public void onSearchAction(String currentQuery) {
+
+                    }
+                });
+
+
+            }
+        });
         fromSearchBar.setOnQueryChangeListener(new FloatingSearchView.OnQueryChangeListener() {
             @Override
             public void onSearchTextChanged(String oldQuery, String newQuery) {
@@ -397,7 +476,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         if(v.getId() == R.id.B_search){
 
-            String toLocation = materialSearchBar.getText();
+            String toLocation = toSuggestion;
             String fromLocation = fromSuggestion;
             List<Address> addressList=null;
             List<Address> fromAddressList = null;

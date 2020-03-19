@@ -19,6 +19,7 @@ android {
     }
 }
 
+
 dependencies {
     implementation 'com.squareup.retrofit2:retrofit:2.3.0'
     implementation 'com.github.arimorty:floatingsearchview:2.1.1'
@@ -33,5 +34,4 @@ dependencies {
     implementation 'com.google.maps.android:android-maps-utils:0.5+'
     implementation 'com.google.android.gms:play-services-places:17.0.0'
     implementation 'com.google.android.libraries.places:places:1.1.0'
-    implementation 'com.github.mancj:MaterialSearchBar:0.8.1'
 }
