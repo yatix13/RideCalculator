@@ -75,16 +75,33 @@
                 android:textSize="18sp"
                 android:id="@+id/TV_distance"
                 />
-            <TextView
-                android:background="@drawable/rectangle"
+            <RelativeLayout
                 android:layout_width="150dp"
                 android:layout_height="match_parent"
-                android:id="@+id/TV_cityName"
-                android:textSize="18sp"
-                android:textColor="@color/white"
-                android:gravity="center"
                 android:layout_marginLeft="50dp"
-                />
+                >
+
+                <TextView
+                    android:background="@drawable/rectangle"
+                    android:layout_width="150dp"
+                    android:layout_height="match_parent"
+                    android:id="@+id/TV_cityName"
+                    android:textSize="18sp"
+                    android:textColor="@color/white"
+                    android:gravity="center"
+                    />
+
+                <Spinner
+                    android:layout_width="150dp"
+                    android:layout_height="match_parent"
+                    android:id="@+id/cityList"
+                    android:textSize="18sp"
+                    android:textColor="@color/white"
+                    android:visibility="gone"
+                    android:gravity="center"/>
+
+            </RelativeLayout>
+
         </LinearLayout>
 
         <ProgressBar

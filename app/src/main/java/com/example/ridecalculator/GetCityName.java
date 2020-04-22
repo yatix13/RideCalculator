@@ -22,6 +22,7 @@ public class GetCityName extends AsyncTask<Object, String, String> {
     static String cityName;
     LatLng latLng;
     static String address;
+    static String stateName;
 
     @Override
     protected String doInBackground(Object... objects) {
@@ -48,6 +49,7 @@ public class GetCityName extends AsyncTask<Object, String, String> {
 
         cityName = parser.getCityName(s);
         address = parser.getAddress(s);
+        stateName = parser.getStateName(s);
 
 
     }

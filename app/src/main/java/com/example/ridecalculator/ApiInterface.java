@@ -9,7 +9,7 @@ public interface ApiInterface {
 
     @FormUrlEncoded
     @POST("fetchFuelPrice/")
-    Call<FuelPrice> fetchFuelPrice(@Field("city") String city, @Field("fuel_type") String fuel_type);
+    Call<FuelPrice> fetchFuelPrice(@Field("city") String city, @Field("state") String state, @Field("fuel_type") String fuel_type);
 
     
 

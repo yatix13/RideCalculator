@@ -35,6 +35,35 @@ public class DataParser {
 
     }
 
+    public String getStateName(String jsonData)
+    {
+        String stateName = "";
+        JSONObject jsonObject = null;
+        try {
+            jsonObject = new JSONObject(jsonData);
+            Log.d("jsonData",jsonData);
+            JSONArray jsonArray = jsonObject.getJSONArray("results").getJSONObject(0).getJSONArray("address_components");
+            for(int i = 0;i<jsonArray.length();i++)
+            {
+                JSONObject object = jsonArray.getJSONObject(i);
+                Log.d("types",object.getString("types"));
+                if(object.getString("types").indexOf("\"administrative_area_level_1\"") != -1)
+                {
+                    stateName = object.getString("long_name");
+                    break;
+                }
+            }
+            Log.d("short_name",stateName);
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        Log.d("stateName = ",stateName);
+
+        return stateName;
+    }
+
     public String getCityName(String jsonData)
     {
         String cityName = "";

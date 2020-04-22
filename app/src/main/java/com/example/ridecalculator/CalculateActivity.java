@@ -5,9 +5,12 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.RadioButton;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.VideoView;
@@ -23,6 +26,7 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.text.DecimalFormat;
+import java.util.ArrayList;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -34,11 +38,12 @@ public class CalculateActivity extends AppCompatActivity {
     private EditText tf_average;
     private double distance, avg, fuelPrice;
     private ProgressBar progressBar;
-    private String cityName;
+    private String cityName, stateName;
     private TextView tv_cityname;
     private RadioButton  rb_petrol, rb_diesel, rb_CNG;
     private String fuelType;
     private VideoView videoView;
+    private Spinner spinnerCityList;
 
 
     @Override
@@ -58,6 +63,7 @@ public class CalculateActivity extends AppCompatActivity {
         videoView.start();
 
          */
+        spinnerCityList = findViewById(R.id.cityList);
 
         /*
         1. average fuel consumption
@@ -76,11 +82,89 @@ public class CalculateActivity extends AppCompatActivity {
         }
         distance = Double.parseDouble(d.substring(0, d.length()-3));
         cityName = getIntent().getStringExtra("cityName");
+        stateName = getIntent().getStringExtra("stateName");
         tv_cityname.setText(cityName);
         tv_distance.setText(d);
 
 
+    }
 
+    public void fetchPetrolPrice()
+    {
+        progressBar.setVisibility(View.VISIBLE);
+        ApiInterface apiService = ApiClient.getRetrofitInstance().create(ApiInterface.class);
+        Call<FuelPrice> call = apiService.fetchFuelPrice(cityName, stateName, fuelType);
+        call.enqueue(new Callback<FuelPrice>() {
+            @Override
+            public void onResponse(Call<FuelPrice> call, Response<FuelPrice> response) {
+                String responseStr = response.body().getResponse();
+                Log.d("response1", responseStr);
+                if(responseStr.equalsIgnoreCase("cityFound"))
+                {
+                    Log.d("cityName", "Found");
+                    fuelPrice = response.body().getPrice();
+                    progressBar.setVisibility(View.GONE);
+                    tv_fuelPrice.setText("₹ "+fuelPrice+"");
+                    Log.d("fuelPrice",fuelPrice+"");
+
+                }
+                else if(responseStr.equalsIgnoreCase("cityNotFound")){
+                    Log.d("cityName","NotFound");
+                    spinnerCityList.setVisibility(View.VISIBLE);
+                    tv_cityname.setVisibility(View.GONE);
+                    final ArrayList<FuelPrice> cityPriceList = response.body().getCityList();
+                    ArrayList<String> cityList = new ArrayList<>();
+                    for(int i=0;i<cityPriceList.size();i++)
+                    {
+                        String city = cityPriceList.get(i).getCity();
+                        cityList.add(city);
+                    }
+
+                    ArrayAdapter<String> adapter = new ArrayAdapter<>(getApplicationContext(), android.R.layout.simple_spinner_item, cityList);
+                    adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                    spinnerCityList.setAdapter(adapter);
+                    spinnerCityList.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                        @Override
+                        public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                            String cityName = parent.getItemAtPosition(position).toString();
+                            Log.d("fetched city", cityName);
+
+                            fuelPrice = 0;
+                            for(int i = 0;i<cityPriceList.size();i++)
+                            {
+                                if(cityPriceList.get(i).getCity().equalsIgnoreCase(cityName))
+                                {
+                                    fuelPrice = cityPriceList.get(i).getPrice();
+                                    break;
+                                }
+                            }
+                            progressBar.setVisibility(View.GONE);
+                            tv_fuelPrice.setText("₹ "+fuelPrice+"");
+                            Log.d("fuelPrice",fuelPrice+"");
+
+
+                        }
+
+                        @Override
+                        public void onNothingSelected(AdapterView<?> parent) {
+
+                        }
+                    });
+                }
+                else //state not found
+                {
+                    progressBar.setVisibility(View.GONE);
+                    Log.d("state","NotFound");
+                    Toast.makeText(getApplicationContext(), "CNG is not available in your state", Toast.LENGTH_SHORT).show();
+                }
+
+            }
+
+            @Override
+            public void onFailure(Call<FuelPrice> call, Throwable t) {
+
+            }
+        });
     }
 
     public void onRadioButtonClicked(View v){
@@ -89,14 +173,20 @@ public class CalculateActivity extends AppCompatActivity {
         switch (v.getId()){
             case R.id.RB_petrol: if(isSelected){
                 fuelType = "Petrol";
+                fetchPetrolPrice();
+
             }
             break;
             case R.id.RB_diesel: if(isSelected){
                 fuelType = "Diesel";
+                fetchPetrolPrice();
+
             }
                 break;
             case R.id.RB_CNG: if(isSelected){
                 fuelType = "CNG";
+                fetchPetrolPrice();
+
             }
                 break;
         }
@@ -118,35 +208,14 @@ public class CalculateActivity extends AppCompatActivity {
             }
             else
             {
-                progressBar.setVisibility(View.VISIBLE);
-                Log.d("fuel type",fuelType);
-                ApiInterface apiService = ApiClient.getRetrofitInstance().create(ApiInterface.class);
-                Call<FuelPrice> call = apiService.fetchFuelPrice(cityName, fuelType);
-                call.enqueue(new Callback<FuelPrice>() {
-                    @Override
-                    public void onResponse(Call<FuelPrice> call, Response<FuelPrice> response) {
-                        double fuelPrice = response.body().getPrice();
-                        progressBar.setVisibility(View.GONE);
-                        tv_fuelPrice.setText("₹ "+fuelPrice+"");
-                        Log.d("fuelPrice",fuelPrice+"");
+                String a = tf_average.getText().toString();
+                avg = Double.parseDouble(a);
+                DecimalFormat df = new DecimalFormat("#.##");
+                double lits = distance/avg;
+                double cost = lits*fuelPrice;
+                cost = Double.parseDouble(df.format(cost));
 
-                        String a = tf_average.getText().toString();
-                        avg = Double.parseDouble(a);
-                        DecimalFormat df = new DecimalFormat("#.##");
-                        double lits = distance/avg;
-                        double cost = lits*fuelPrice;
-                        cost = Double.parseDouble(df.format(cost));
-
-                        tv_result.setText("₹ "+cost);
-
-                    }
-
-                    @Override
-                    public void onFailure(Call<FuelPrice> call, Throwable t) {
-
-                    }
-                });
-                //getJSON("https://polyphyodont-bets.000webhostapp.com/fetch_petrol_price.php");
+                tv_result.setText("₹ "+cost);
             }
         }
 
