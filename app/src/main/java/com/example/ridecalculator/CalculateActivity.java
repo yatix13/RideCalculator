@@ -120,7 +120,7 @@ public class CalculateActivity extends AppCompatActivity {
                         cityList.add(city);
                     }
 
-                    ArrayAdapter<String> adapter = new ArrayAdapter<>(getApplicationContext(), android.R.layout.simple_spinner_item, cityList);
+                    ArrayAdapter<String> adapter = new ArrayAdapter<>(getApplicationContext(), R.layout.spinner_item, cityList);
                     adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                     spinnerCityList.setAdapter(adapter);
                     spinnerCityList.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {

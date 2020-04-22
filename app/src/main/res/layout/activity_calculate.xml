@@ -77,12 +77,12 @@
                 />
             <RelativeLayout
                 android:layout_width="150dp"
+                android:background="@drawable/rectangle"
                 android:layout_height="match_parent"
                 android:layout_marginLeft="50dp"
                 >
 
                 <TextView
-                    android:background="@drawable/rectangle"
                     android:layout_width="150dp"
                     android:layout_height="match_parent"
                     android:id="@+id/TV_cityName"

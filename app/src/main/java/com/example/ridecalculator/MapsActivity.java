@@ -103,86 +103,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         final PlacesClient placesClient = Places.createClient(MapsActivity.this);
 
 
-        /*
-        materialSearchBar.addTextChangeListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                FindAutocompletePredictionsRequest request = FindAutocompletePredictionsRequest.builder()
-                        .setCountry("IN")
-                        .setTypeFilter(TypeFilter.ADDRESS)
-                        .setSessionToken(token)
-                        .setQuery(s.toString())
-                        .build();
-                Log.d("autocomplete request", request.toString());
-
-                placesClient.findAutocompletePredictions(request).addOnCompleteListener(new OnCompleteListener<FindAutocompletePredictionsResponse>() {
-                    @Override
-                    public void onComplete(@NonNull Task<FindAutocompletePredictionsResponse> task) {
-                        if(task.isSuccessful()){
-                            FindAutocompletePredictionsResponse response = task.getResult();
-                            Log.d("suggestionResponse", response.toString());
-                            if(response != null){
-                                predictionList = response.getAutocompletePredictions();
-                                suggestionList = new ArrayList<>();
-                                for(int i=0; i<predictionList.size(); i++){
-
-                                    AutocompletePrediction prediction = predictionList.get(i);
-                                    String one = prediction.getFullText(null).toString();
-                                    suggestionList.add(one);
-                                }
-                                materialSearchBar.updateLastSuggestions(suggestionList);
-                                if(!materialSearchBar.isSuggestionsVisible())
-                                {
-                                    materialSearchBar.showSuggestionsList();
-                                }
-
-                            }
-                        }
-                        else{
-                            Log.d("error","Auto complete request fail");
-                        }
-                    }
-                });
-
-
-
-                materialSearchBar.setSuggstionsClickListener(new SuggestionsAdapter.OnItemViewClickListener() {
-                    @Override
-                    public void OnItemClickListener(int position, View v) {
-                        if(position > suggestionList.size())
-                            return;
-                        AutocompletePrediction selectedPrediction = predictionList.get(position);
-                        String suggestion = materialSearchBar.getLastSuggestions().get(position).toString();
-                        materialSearchBar.clearSuggestions();
-                        materialSearchBar.hideSuggestionsList();
-                        materialSearchBar.setText(suggestion);
-                        searchResult = suggestion;
-
-                        hideKeyboard(MapsActivity.this, v);
-                    }
-
-                    @Override
-                    public void OnItemDeleteListener(int position, View v) {
-
-                    }
-                });
-
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-
-            }
-        });
-
-
-         */
         materialSearchBar.setOnQueryChangeListener(new FloatingSearchView.OnQueryChangeListener() {
             @Override
             public void onSearchTextChanged(String oldQuery, String newQuery) {
@@ -338,86 +259,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             }
         });
 
-        /*
-        fromSearchBar.addTextChangeListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                FindAutocompletePredictionsRequest request = FindAutocompletePredictionsRequest.builder()
-                        .setCountry("IN")
-                        .setTypeFilter(TypeFilter.ADDRESS)
-                        .setSessionToken(token)
-                        .setQuery(s.toString())
-                        .build();
-                Log.d("autocomplete request", request.toString());
-
-                placesClient.findAutocompletePredictions(request).addOnCompleteListener(new OnCompleteListener<FindAutocompletePredictionsResponse>() {
-                    @Override
-                    public void onComplete(@NonNull Task<FindAutocompletePredictionsResponse> task) {
-                        if(task.isSuccessful()){
-                            FindAutocompletePredictionsResponse response = task.getResult();
-                            Log.d("suggestionResponse", response.toString());
-                            if(response != null){
-                                predictionList = response.getAutocompletePredictions();
-                                suggestionList = new ArrayList<>();
-                                for(int i=0; i<predictionList.size(); i++){
-
-                                    AutocompletePrediction prediction = predictionList.get(i);
-                                    String one = prediction.getFullText(null).toString();
-                                    suggestionList.add(one);
-                                }
-                                fromSearchBar.updateLastSuggestions(suggestionList);
-                                if(!fromSearchBar.isSuggestionsVisible())
-                                {
-                                    fromSearchBar.showSuggestionsList();
-                                }
-
-                            }
-                        }
-                        else{
-                            Log.d("error","Auto complete request fail");
-                        }
-                    }
-                });
-
-
-
-                fromSearchBar.setSuggstionsClickListener(new SuggestionsAdapter.OnItemViewClickListener() {
-                    @Override
-                    public void OnItemClickListener(int position, View v) {
-                        if(position > suggestionList.size())
-                            return;
-                        fromSearchBar.hideSuggestionsList();
-
-                        AutocompletePrediction selectedPrediction = predictionList.get(position);
-                        String suggestion = fromSearchBar.getLastSuggestions().get(position).toString();
-                        fromSearchBar.setText(suggestion);
-                        fromSearchBar.clearSuggestions();
-                        fromSearchBar.hideSuggestionsList();
-                        searchResult = suggestion;
-
-                        hideKeyboard(MapsActivity.this, v);
-                    }
-
-                    @Override
-                    public void OnItemDeleteListener(int position, View v) {
-
-                    }
-                });
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-
-            }
-        });
-
-         */
     }
 
     public void hideKeyboard(Activity activity, View view)
@@ -528,7 +370,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 dataTransfer[1] = getDirectionsUrl();
                 dataTransfer[2] = latlng;
 
-
+                mMap.clear();
                 directionsData.execute(dataTransfer);
 
                 final Button B_OK = findViewById(R.id.B_ok);
